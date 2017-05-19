@@ -49,9 +49,46 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 		parent::__construct();
 		
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		
 		add_filter( 'manage_' . $this->post_type . '_posts_columns', array( $this, 'admin_column_add' ) );
 		
 		add_action( 'manage_' . $this->post_type . '_posts_custom_column', array( $this, 'admin_column_display' ), 10, 2 );
+		
+	}
+	
+	/**
+	 * Add Meta Box
+	 * 
+	 * @since 1.0.0
+	 */
+	public function add_meta_boxes() {
+		
+		add_meta_box(
+			'ebook-download-url',
+			sprintf( _x( '%s Meta', 'Metabox Title', 'gscr-cpt-radio-shows' ), $this->label_singular ),
+			array( $this, 'metabox_content' ),
+			$this->post_type,
+			'normal'
+		);
+		
+	}
+	
+	/**
+	 * Add Meta Field
+	 * 
+	 * @since 1.0.0
+	 */
+	public function metabox_content() {
+		
+		rbm_do_field_text(
+			'ebook_download_url',
+			_x( 'Download URL', 'Download URL Label', 'gscr-cpt-radio-shows' ),
+			false,
+			array(
+				'description' => __( 'The URL to download this asset, or the landing page URL.', 'gscr-cpt-radio-shows' ),
+			)
+		);
 		
 	}
 	
