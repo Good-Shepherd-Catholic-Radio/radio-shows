@@ -51,6 +51,8 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		
 		add_filter( 'manage_' . $this->post_type . '_posts_columns', array( $this, 'admin_column_add' ) );
 		
 		add_action( 'manage_' . $this->post_type . '_posts_custom_column', array( $this, 'admin_column_display' ), 10, 2 );
@@ -60,12 +62,14 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	/**
 	 * Add Meta Box
 	 * 
-	 * @since 1.0.0
+	 * @access		public
+	 * @since		1.0.0
+	 * @return		void
 	 */
 	public function add_meta_boxes() {
 		
 		add_meta_box(
-			'ebook-download-url',
+			'radio-show-meta',
 			sprintf( _x( '%s Meta', 'Metabox Title', 'gscr-cpt-radio-shows' ), $this->label_singular ),
 			array( $this, 'metabox_content' ),
 			$this->post_type,
@@ -77,18 +81,113 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	/**
 	 * Add Meta Field
 	 * 
-	 * @since 1.0.0
+	 * @access		public
+	 * @since		1.0.0
+	 * @return		void
 	 */
 	public function metabox_content() {
 		
-		rbm_do_field_text(
-			'ebook_download_url',
-			_x( 'Download URL', 'Download URL Label', 'gscr-cpt-radio-shows' ),
+		?>
+
+		<p class="description">
+			blah
+		</p>
+
+		<?php
+		
+		rbm_do_field_timepicker(
+			'radio_show_time_start',
+			_x( 'Radio Show Start Time', 'Radio Show Start Time Label', 'gscr-cpt-radio-shows' ),
 			false,
 			array(
-				'description' => __( 'The URL to download this asset, or the landing page URL.', 'gscr-cpt-radio-shows' ),
 			)
 		);
+		
+		rbm_do_field_timepicker(
+			'radio_show_time_end',
+			_x( 'Radio Show End Time', 'Radio Show End Time Label', 'gscr-cpt-radio-shows' ),
+			false,
+			array(
+			)
+		);
+		
+		global $wp_locale;
+		
+		$options = array();
+		
+		foreach ( $wp_locale->weekday as $weekday ) {
+			$options[ $weekday ] = $weekday;
+		}
+		
+		rbm_do_field_radio(
+			'radio_show_date',
+			_x( 'Radio Show Date', 'Radio Show Date Label', 'gscr-cpt-radio-shows' ),
+			false,
+			array(
+				'options' => $options,
+			)
+		);
+		
+		rbm_do_field_checkbox(
+			'radio_show_encore',
+			_x( 'Radio Show Encore?', 'Radio Show Encore Label', 'gscr-cpt-radio-shows' ),
+			false,
+			array(
+				'wrapper_class' => 'radio-show-encore',
+			)
+		);
+		
+		$radio_shows = new WP_Query( array(
+			'post_type' => 'radio-show',
+			'posts_per_page' => -1,
+		) );
+		
+		$radio_shows = wp_list_pluck( $radio_shows->posts, 'post_title', 'ID' );
+		
+		// Nice try
+		if ( isset( $_GET['post'] ) ) unset( $radio_shows[ $_GET['post'] ] );
+		
+		rbm_do_field_select(
+			'radio_show_original',
+			_x( 'Which Radio Show is this an Encore of?', 'Radio Show Original Label', 'gscr-cpt-radio-shows' ),
+			false,
+			array(
+				'options' => array( '' => _x( 'Select a Radio Show', 'Select a Radio Show Text', 'gscr-cpt-radio-shows' ) ) + $radio_shows,
+				'wrapper_class' => 'radio-show-original' . ( ( ! rbm_get_field( 'radio_show_original' ) ) ? ' hidden' : '' ),
+			)
+		);
+		
+		rbm_do_field_checkbox(
+			'radio_show_live',
+			_x( 'Live Radio Show?', 'Live Radio Show Label', 'gscr-cpt-radio-shows' ),
+			false,
+			array(
+				'wrapper_class' => 'radio-show-live',
+			)
+		);
+		
+		rbm_do_field_checkbox(
+			'radio_show_local',
+			_x( 'Local Radio Show?', 'Local Radio Show Label', 'gscr-cpt-radio-shows' ),
+			false,
+			array(
+				
+			)
+		);
+		
+	}
+	
+	public function admin_enqueue_scripts() {
+		
+		$current_screen = get_current_screen();
+		global $pagenow;
+		
+		if ( $current_screen->post_type == $this->post_type && 
+			( in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) ) ) {
+			
+			wp_enqueue_script( 'gscr-cpt-radio-shows-admin' );
+			
+		}
 		
 	}
 	
