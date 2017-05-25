@@ -119,13 +119,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 			)
 		);
 
-		global $wp_locale;
-
-		$options = array();
-
-		foreach ( $wp_locale->weekday as $weekday ) {
-			$options[ $weekday ] = $weekday;
-		}
+		$options = gscr_get_weekdays();
 
 		rbm_do_field_radio(
 			'radio_show_day',
@@ -265,7 +259,9 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 				break;
 			case 'air-day-time' :
 				
-					rbm_field( 'radio_show_day', $post_id );
+					$weekdays = gscr_get_weekdays();
+				
+					echo $weekdays[ rbm_get_field( 'radio_show_day', $post_id ) ];
 				
 					echo ' ' . __( 'from', 'gscr-cpt-radio-shows' ) . ' ' . date( get_option( 'time_format', 'g:i a' ), strtotime( rbm_get_field( 'radio_show_time_start' ) ) ) . ' ';
 				
@@ -314,6 +310,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		$sortable_columns['local'] = '_rbm_radio_show_local';
 		$sortable_columns['live'] = '_rbm_radio_show_live';
 		$sortable_columns['encore'] = '_rbm_radio_show_encore';
+		$sortable_columns['air-day-time'] = 'air-day-time';
 		
 		return $sortable_columns;
 		
@@ -349,6 +346,28 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 			) );
 			
 			$query->set( 'orderby', 'meta_value_num' );
+			
+		}
+		else if ( $orderby == 'air-day-time' ) {
+			
+			$query->set( 'meta_query', array(
+				'relation' => 'AND',
+				'_rbm_radio_show_day' => array(
+					'key' => '_rbm_radio_show_day',
+					'compare' => 'EXISTS',
+				),
+				'_rbm_radio_show_time_start' => array(
+					'key' => '_rbm_radio_show_time_start',
+					'compare' => 'EXISTS',
+				),
+			) );
+			
+			$order = $query->get( 'order' );
+			
+			$query->set( 'orderby', array(
+				'_rbm_radio_show_day' => $order,
+				'_rbm_radio_show_time_start' => $order,
+			) );
 			
 		}
 		

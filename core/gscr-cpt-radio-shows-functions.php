@@ -21,3 +21,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 function GSCRCPTRADIOSHOWS() {
 	return GSCR_CPT_Radio_Shows::instance();
 }
+
+/**
+ * Returns a localized Array of Weekday names with numeric Indices
+ * The "Week Starts On" day in wp_options does not matter here
+ * 
+ * @since		1.0.0
+ * @return		array Localized Weekday names
+ */
+function gscr_get_weekdays() {
+	
+	global $wp_locale;
+
+	$options = array();
+
+	foreach ( $wp_locale->weekday as $index => $weekday ) {
+		$options[ $index ] = $weekday;
+	}
+	
+	return $options;
+
+}
