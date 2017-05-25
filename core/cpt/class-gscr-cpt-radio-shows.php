@@ -119,14 +119,14 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 			)
 		);
 
-		$options = gscr_get_weekdays();
+		$weekdays = gscr_get_weekdays();
 
 		rbm_do_field_radio(
 			'radio_show_day',
 			_x( 'Radio Show Day', 'Radio Show Day Label', 'gscr-cpt-radio-shows' ),
 			false,
 			array(
-				'options' => $options,
+				'options' => $weekdays,
 			)
 		);
 
@@ -142,9 +142,31 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		$radio_shows = new WP_Query( array(
 			'post_type' => 'radio-show',
 			'posts_per_page' => -1,
+			'meta_query' => array(
+				'relation' => 'AND',
+				'_rbm_radio_show_day' => array(
+					'key' => '_rbm_radio_show_day',
+					'compare' => 'EXISTS',
+				),
+				'_rbm_radio_show_time_start' => array(
+					'key' => '_rbm_radio_show_time_start',
+					'compare' => 'EXISTS',
+				),
+			),
+			'orderby' => array(
+				'_rbm_radio_show_day' => 'ASC',
+				'_rbm_radio_show_time_start' => 'ASC',
+			)
 		) );
 
 		$radio_shows = wp_list_pluck( $radio_shows->posts, 'post_title', 'ID' );
+		$time_format = get_option( 'time_format', 'g:i a' );
+		
+		foreach ( $radio_shows as $post_id => $radio_show ) {
+			
+			$radio_shows[ $post_id ] = $radio_show . ' - ' . $weekdays[ rbm_get_field( 'radio_show_day', $post_id ) ] . ' ' . __( 'at', 'gscr-cpt-radio-shows' ) . ' ' . date( $time_format, strtotime( rbm_get_field( 'radio_show_time_start', $post_id ) ) );
+			
+		}
 
 		// Nice try
 		if ( isset( $_GET['post'] ) ) unset( $radio_shows[ $_GET['post'] ] );
