@@ -56,6 +56,10 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		add_filter( 'manage_' . $this->post_type . '_posts_columns', array( $this, 'admin_column_add' ) );
 
 		add_action( 'manage_' . $this->post_type . '_posts_custom_column', array( $this, 'admin_column_display' ), 10, 2 );
+		
+		add_filter( 'manage_edit-' . $this->post_type . '_sortable_columns', array( $this, 'admin_columns_sortable' ) );
+		
+		add_action( 'pre_get_posts', array( $this, 'admin_columns_sorting' ) );
 
 		add_filter( 'get_sample_permalink_html', array( $this, 'alter_permalink_html' ), 10, 5 );
 
@@ -124,8 +128,8 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		}
 
 		rbm_do_field_radio(
-			'radio_show_date',
-			_x( 'Radio Show Date', 'Radio Show Date Label', 'gscr-cpt-radio-shows' ),
+			'radio_show_day',
+			_x( 'Radio Show Day', 'Radio Show Day Label', 'gscr-cpt-radio-shows' ),
 			false,
 			array(
 				'options' => $options,
@@ -182,6 +186,13 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 	}
 
+	/**
+	 * Enqueue Admin Scripts/CSS
+	 * 
+	 * @access		public
+	 * @since		1.0.0
+	 * @return		void
+	 */
 	public function admin_enqueue_scripts() {
 
 		$current_screen = get_current_screen();
@@ -208,6 +219,14 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	public function admin_column_add( $columns ) {
 
 		$columns['on-air-personality'] = _x( 'On Air Personalities', 'On Air Personalities Column Label', 'gscr-cpt-radio-shows' );
+		
+		$columns['air-day-time'] = _x( 'Air Day and Time', 'Air Day and Time Column Label', 'gscr-cpt-radio-shows' );
+		
+		$columns['local'] = _x( 'Local?', 'Local Column Label', 'gscr-cpt-radio-shows' );
+		
+		$columns['live'] = _x( 'Live?', 'Live Column Label', 'gscr-cpt-radio-shows' );
+		
+		$columns['encore'] = _x( 'Encore of:', 'Encore Column Label', 'gscr-cpt-radio-shows' );
 
 		return $columns;
 
@@ -244,12 +263,95 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 					echo '</ul>';
 
 				break;
+			case 'air-day-time' :
+				
+					rbm_field( 'radio_show_day', $post_id );
+				
+					echo ' ' . __( 'from', 'gscr-cpt-radio-shows' ) . ' ' . date( get_option( 'time_format', 'g:i a' ), strtotime( rbm_get_field( 'radio_show_time_start' ) ) ) . ' ';
+				
+					echo __( 'to', 'gscr-cpt-radio-shows' ) . ' ' . date( get_option( 'time_format', 'g:i a' ), strtotime( rbm_get_field( 'radio_show_time_end' ) ) );
+				
+				break;
+			case 'local' : 
+			case 'live' :
+				
+					if ( rbm_get_field( 'radio_show_' . $column, $post_id ) ) : ?>
+
+						<span class="dashicons dashicons-yes"></span>
+				
+					<?php endif;
+				
+				break;
+			case 'encore' :
+				
+					if ( rbm_get_field( 'radio_show_encore', $post_id ) &&
+						$radio_show_id = rbm_get_field( 'radio_show_original', $post_id ) ) {
+
+						edit_post_link( get_the_title( $radio_show_id ), '', '', $radio_show_id );
+
+					}
+				
+				break;
 			case 'default' :
 				echo rbm_field( $column, $post_id );
 				break;
 
 		}
 
+	}
+	
+	/**
+	 * Modify the Sortable Admin Columns
+	 * 
+	 * @param		array $sortable_columns Sortable Admin Columns
+	 *                                                
+	 * @access		public
+	 * @since		1.0.0
+	 * @return		array Sortable Admin Columns
+	 */
+	public function admin_columns_sortable( $sortable_columns ) {
+		
+		$sortable_columns['local'] = '_rbm_radio_show_local';
+		$sortable_columns['live'] = '_rbm_radio_show_live';
+		$sortable_columns['encore'] = '_rbm_radio_show_encore';
+		
+		return $sortable_columns;
+		
+	}
+	
+	/**
+	 * Sort our Admin Columns
+	 * 
+	 * @param		object $query WP_Query
+	 *                       
+	 * @access		public
+	 * @since		1.0.0
+	 * @return		void
+	 */
+	public function admin_columns_sorting( $query ) {
+		
+		$orderby = $query->get( 'orderby' );
+		
+		// Sort based on Exists or not
+		$exists = array(
+			'_rbm_radio_show_local',
+			'_rbm_radio_show_live',
+			'_rbm_radio_show_encore',
+		);
+		
+		if ( in_array( $orderby, $exists ) ) {
+			
+			$query->set( 'meta_query', array(
+				array(
+					'key' => $orderby,
+					'compare' => 'EXISTS'
+				),
+			) );
+			
+			$query->set( 'orderby', 'meta_value_num' );
+			
+		}
+		
 	}
 
 	/**
