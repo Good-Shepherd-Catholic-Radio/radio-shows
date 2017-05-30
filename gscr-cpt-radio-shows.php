@@ -35,12 +35,6 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 		 * @since		1.0.0
 		 */
 		private $admin_errors;
-		
-		/**
-		 * @var			GSCR_CPT_Radio_Shows $cpt Holds the CPT
-		 * @since		1.0.0
-		 */
-		public $cpt;
 
 		/**
 		 * Get active instance
@@ -78,10 +72,9 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 				
 			}
 			
-			if ( ! class_exists( 'RBM_CPTS' ) ||
-				! class_exists( 'RBM_FieldHelpers' ) ) {
+			if ( ! class_exists( 'Tribe__Events__Main' ) ) {
 				
-				$this->admin_errors[] = sprintf( _x( 'To use the %s Plugin, both %s and %s must be active as either a Plugin or a Must Use Plugin!', 'Missing Dependency Error', 'gscr-cpt-radio-shows' ), '<strong>' . $this->plugin_data['Name'] . '</strong>', '<a href="//github.com/realbig/rbm-field-helpers/" target="_blank">' . __( 'RBM Field Helpers', 'gscr-cpt-radio-shows' ) . '</a>', '<a href="//github.com/realbig/rbm-cpts/" target="_blank">' . __( 'RBM Custom Post Types', 'gscr-cpt-radio-shows' ) . '</a>' );
+				$this->admin_errors[] = sprintf( _x( 'To use the %s Plugin, %s must be installed!', 'Missing Dependency Error', 'gscr-cpt-radio-shows' ), '<strong>' . $this->plugin_data['Name'] . '</strong>', '<a href="//wordpress.org/plugins/the-events-calendar/" target="_blank">' . __( 'The Events Calendar', 'gscr-cpt-radio-shows' ) . '</a>' );
 				
 				if ( ! has_action( 'admin_notices', array( $this, 'admin_errors' ) ) ) {
 					add_action( 'admin_notices', array( $this, 'admin_errors' ) );
@@ -183,8 +176,14 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 		 */
 		private function require_necessities() {
 			
-			require_once GSCR_CPT_Radio_Shows_DIR . 'core/cpt/class-gscr-cpt-radio-shows.php';
-			$this->cpt = new CPT_GSCR_Radio_Shows();
+			// Cause our custom Permastruct to exist
+			require_once GSCR_CPT_Radio_Shows_DIR . 'core/the-events-calendar/class-gscr-cpt-radio-shows-rewrite-rules.php';
+			
+			// Redirect all Events with the "Radio Show" Category to our Permastruct
+			require_once GSCR_CPT_Radio_Shows_DIR . 'core/the-events-calendar/class-gscr-cpt-radio-shows-redirects.php';
+			
+			// Remove all Radio Shows from the main The Events Calendar Query
+			require_once GSCR_CPT_Radio_Shows_DIR . 'core/the-events-calendar/class-gscr-cpt-radio-shows-query.php';
 			
 		}
 		
