@@ -35,12 +35,6 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 		 * @since		1.0.0
 		 */
 		private $admin_errors;
-		
-		/**
-		 * @var			GSCR_CPT_Radio_Shows $cpt Holds the CPT
-		 * @since		1.0.0
-		 */
-		public $cpt;
 
 		/**
 		 * Get active instance
@@ -183,8 +177,14 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 		 */
 		private function require_necessities() {
 			
-			require_once GSCR_CPT_Radio_Shows_DIR . 'core/cpt/class-gscr-cpt-radio-shows.php';
-			$this->cpt = new CPT_GSCR_Radio_Shows();
+			// Cause our custom Permastruct to exist
+			require_once GSCR_CPT_Radio_Shows_DIR . 'core/the-events-calendar/class-gscr-cpt-radio-shows-rewrite-rules.php';
+			
+			// Redirect all Events with the "Radio Show" Category to our Permastruct
+			require_once GSCR_CPT_Radio_Shows_DIR . 'core/the-events-calendar/class-gscr-cpt-radio-shows-redirects.php';
+			
+			// Remove all Radio Shows from the main The Events Calendar Query
+			require_once GSCR_CPT_Radio_Shows_DIR . 'core/the-events-calendar/class-gscr-cpt-radio-shows-query.php';
 			
 		}
 		
