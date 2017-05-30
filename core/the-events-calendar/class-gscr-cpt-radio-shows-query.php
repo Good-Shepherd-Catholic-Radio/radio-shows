@@ -19,8 +19,23 @@ class GSCR_Radio_Shows_Query {
 	 */
 	function __construct() {
 		
+		add_action( 'init', array( $this, 'create_term' ), 11 );
+		
 		add_action( 'tribe_events_pre_get_posts', array( $this, 'remove_radio_shows' ) );
 		
+	}
+	
+	public function create_term() {
+
+		if ( ! term_exists( 'radio-show', 'tribe_events_cat' ) ) {
+
+			$test = wp_insert_term(
+				__( 'Radio Show', 'gscr-cpt-radio-shows' ),
+				'tribe_events_cat'
+			);
+
+		}
+
 	}
 	
 	/**
