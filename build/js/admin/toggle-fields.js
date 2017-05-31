@@ -2,34 +2,36 @@
 	
 	$( document ).ready( function() {
 		
+		$( '#radio-show-meta' ).addClass( 'hidden' );
+		
 		if ( $( '#radio-show-meta' ).length > 0 ) {
 			
-			// Show/Hide Select Field depending on if Encore is checked
-			$( 'p.radio-show-encore.rbm-field-checkbox input[type="checkbox"]' ).on( 'change', function( event ) {
+			$( '#taxonomy-tribe_events_cat input[type="checkbox"]' ).each( function( index, checkbox ) {
 				
-				if ( $( this ).prop( 'checked' ) ) {
-					$( '.radio-show-original.rbm-field-select' ).removeClass( 'hidden' ).find( 'select' ).attr( 'required', true );
-				}
-				else {
-					$( '.radio-show-original.rbm-field-select' ).addClass( 'hidden' ).find( 'select' ).attr( 'required', false );
+				if ( $( checkbox ).closest( '.selectit' ).text().trim() == 'Radio Show' ) {
+				
+					if ( $( checkbox ).prop( 'checked' ) ) {
+						$( '#radio-show-meta' ).removeClass( 'hidden' );
+					}
+					else {
+						$( '#radio-show-meta' ).addClass( 'hidden' );
+					}
+					
 				}
 				
 			} );
 			
-			// Toggle Live/Encore so that they both can't be checked at once
-			$( 'p.radio-show-encore.rbm-field-checkbox input[type="checkbox"], p.radio-show-live.rbm-field-checkbox input[type="checkbox"]' ).on( 'change', function( event ) {
+			// Show/Hide Select Field depending on if Encore is checked
+			$( '#taxonomy-tribe_events_cat input[type="checkbox"]' ).on( 'change', function( event ) {
 				
-				if ( $( this ).prop( 'checked' ) ) {
-					
-					var toggle = '';
-					if ( event.currentTarget.name.indexOf( 'live' ) > 0 ) {
-						toggle = 'encore';
+				if ( $( this ).closest( '.selectit' ).text().trim() == 'Radio Show' ) {
+				
+					if ( $( this ).prop( 'checked' ) ) {
+						$( '#radio-show-meta' ).removeClass( 'hidden' );
 					}
 					else {
-						toggle = 'live';
+						$( '#radio-show-meta' ).addClass( 'hidden' );
 					}
-					
-					$( 'p.radio-show-' + toggle + '.rbm-field-checkbox input[type="checkbox"]' ).prop( 'checked', false ).trigger( 'change' );
 					
 				}
 				

@@ -185,6 +185,9 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 			// Remove all Radio Shows from the main The Events Calendar Query
 			require_once GSCR_CPT_Radio_Shows_DIR . 'core/the-events-calendar/class-gscr-cpt-radio-shows-query.php';
 			
+			// Includes our Meta Fields
+			require_once GSCR_CPT_Radio_Shows_DIR . 'core/class-gscr-cpt-radio-shows-fields.php';
+			
 		}
 		
 		/**
