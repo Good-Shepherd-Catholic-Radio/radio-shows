@@ -52,30 +52,35 @@ class GSCR_Radio_Shows_Query {
 		
 		if ( is_archive() && ! is_admin() ) {
 			
-			$tax_query = $query->get( 'tax_query' );
+			if ( $query->query_vars['eventDisplay'] !== 'single-event' &&
+				$query->query_vars['eventDisplay'] !== 'all' ) {
 			
-			$exclude = array(
-				'taxonomy' => 'tribe_events_cat',
-				'field' => 'slug',
-				'terms' => array( 'radio-show' ),
-				'operator' => 'NOT IN'
-			);
-			
-			if ( empty( $tax_query ) ) {
-				
-				$tax_query = array(
-					'relation' => 'AND',
-					$exclude
+				$tax_query = $query->get( 'tax_query' );
+
+				$exclude = array(
+					'taxonomy' => 'tribe_events_cat',
+					'field' => 'slug',
+					'terms' => array( 'radio-show' ),
+					'operator' => 'NOT IN'
 				);
+
+				if ( empty( $tax_query ) ) {
+
+					$tax_query = array(
+						'relation' => 'AND',
+						$exclude
+					);
+
+				}
+				else {
+
+					$tax_query[] = $exclude;
+
+				}
+
+				$query->set( 'tax_query', $tax_query );
 				
 			}
-			else {
-				
-				$tax_query[] = $exclude;
-				
-			}
-			
-			$query->set( 'tax_query', $tax_query );
 			
 		}
 		
