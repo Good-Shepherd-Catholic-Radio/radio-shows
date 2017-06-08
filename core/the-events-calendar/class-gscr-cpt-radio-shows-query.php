@@ -23,6 +23,8 @@ class GSCR_Radio_Shows_Query {
 		
 		add_action( 'tribe_events_pre_get_posts', array( $this, 'remove_radio_shows' ) );
 		
+		add_filter( 'term_links-tribe_events_cat', array( $this, 'get_the_term_list' ) );
+		
 	}
 	
 	public function create_term() {
@@ -83,6 +85,36 @@ class GSCR_Radio_Shows_Query {
 			}
 			
 		}
+		
+	}
+	
+	/**
+	 * Excludes Radio Shows from any front-end list of Terms
+	 * 
+	 * @param		array $links Array of HTML Links
+	 * 
+	 * @access		public
+	 * @since		1.0.0
+	 * @return		array Modified Array
+	 */
+	public function get_the_term_list( $links ) {
+		
+		// WordPress loves absolute URLs
+		$matches = preg_grep( '/\/radio-show\//i', $links );
+		
+		if ( empty( $matches ) ) return $links;
+		
+		// This gives us access to the Absolute URL to search for the index
+		foreach ( $matches as $match ) {
+			
+			// We need the Index of the $links array, not the $matches array
+			$index = array_search( $match, $links );
+			
+			unset( $links[ $index ] );
+			
+		}
+		
+		return $links;
 		
 	}
 	
