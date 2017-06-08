@@ -21,7 +21,7 @@ class GSCR_Radio_Shows_Query {
 		
 		add_action( 'init', array( $this, 'create_term' ), 11 );
 		
-		add_action( 'tribe_events_pre_get_posts', array( $this, 'remove_radio_shows' ) );
+		add_action( 'tribe_events_pre_get_posts', array( $this, 'remove_radio_shows' ), 999 );
 		
 		add_filter( 'term_links-tribe_events_cat', array( $this, 'get_the_term_list' ) );
 		
@@ -64,7 +64,7 @@ class GSCR_Radio_Shows_Query {
 	 */
 	public function remove_radio_shows( $query ) {
 		
-		if ( is_archive() && ! is_admin() ) {
+		if ( ! is_admin() || Tribe__Main::instance()->doing_ajax() ) {
 			
 			if ( $query->query_vars['eventDisplay'] !== 'single-event' &&
 				$query->query_vars['eventDisplay'] !== 'all' ) {
