@@ -232,7 +232,8 @@ class GSCR_Radio_Shows_Query {
 	}
 	
 	/**
-	 * Forcibly injects Google Tag Manager code after the opening <body> tag without needing to edit header.php in the Parent Theme
+	 * Remove "All Events" Link from Event Single. We're doing this on our own via our Breadcrumbs in the Theme. 
+	 * This prevents us from needing to maintain a Template File
 	 * 
 	 * @access		public
 	 * @since		1.0.0
