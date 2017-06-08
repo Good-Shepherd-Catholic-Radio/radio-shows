@@ -25,6 +25,14 @@ class GSCR_Radio_Shows_Query {
 		
 		add_filter( 'term_links-tribe_events_cat', array( $this, 'get_the_term_list' ) );
 		
+		add_filter( 'tribe_event_label_singular', array( $this, 'tribe_event_label_singular' ) );
+		
+		add_filter( 'tribe_event_label_singular_lowercase', array( $this, 'tribe_event_label_singular_lowercase' ) );
+		
+		add_filter( 'tribe_event_label_plural', array( $this, 'tribe_event_label_plural' ) );
+		
+		add_filter( 'tribe_event_label_plural_lowercase', array( $this, 'tribe_event_label_plural_lowercase' ) );
+		
 	}
 	
 	public function create_term() {
@@ -115,6 +123,90 @@ class GSCR_Radio_Shows_Query {
 		}
 		
 		return $links;
+		
+	}
+	
+	/**
+	 * Replace Singular Label for Radio Shows
+	 * 
+	 * @param		string $singular_uppercase
+	 *
+	 * @since		1.0.0
+	 * @return		string
+	 */
+	public function tribe_event_label_singular( $singular_uppercase ) {
+		
+		$terms = wp_get_post_terms( get_the_ID(), 'tribe_events_cat' );
+		
+		// Flatten down the returned Array of Objects into just an Associative Array
+		$terms = wp_list_pluck( $terms, 'slug', 'term_id' );
+		
+		if ( ! in_array( 'radio-show', $terms ) ) return $singular_uppercase;
+		
+		return __( 'Radio Show', 'gscr-cpt-radio-shows' );
+		
+	}
+	
+	/**
+	 * Replace Singular Label for Radio Shows
+	 * 
+	 * @param		string $singular_lowercase
+	 *
+	 * @since		1.0.0
+	 * @return		string
+	 */
+	public function tribe_event_label_singular_lowercase( $singular_lowercase ) {
+		
+		$terms = wp_get_post_terms( get_the_ID(), 'tribe_events_cat' );
+		
+		// Flatten down the returned Array of Objects into just an Associative Array
+		$terms = wp_list_pluck( $terms, 'slug', 'term_id' );
+		
+		if ( ! in_array( 'radio-show', $terms ) ) return $singular_lowercase;
+		
+		return __( 'radio show', 'gscr-cpt-radio-shows' );
+		
+	}
+	
+	/**
+	 * Replace Plural Label for Radio Shows
+	 * 
+	 * @param		string $plural_uppercase
+	 *
+	 * @since		1.0.0
+	 * @return		string
+	 */
+	public function tribe_event_label_plural( $plural_uppercase ) {
+		
+		$terms = wp_get_post_terms( get_the_ID(), 'tribe_events_cat' );
+		
+		// Flatten down the returned Array of Objects into just an Associative Array
+		$terms = wp_list_pluck( $terms, 'slug', 'term_id' );
+		
+		if ( ! in_array( 'radio-show', $terms ) ) return $plural_uppercase;
+		
+		return __( 'Radio Shows', 'gscr-cpt-radio-shows' );
+		
+	}
+	
+	/**
+	 * Replace Singular Label for Radio Shows
+	 * 
+	 * @param		string $plural_lowercase
+	 *
+	 * @since		1.0.0
+	 * @return		string
+	 */
+	public function tribe_event_label_plural_lowercase( $plural_lowercase ) {
+		
+		$terms = wp_get_post_terms( get_the_ID(), 'tribe_events_cat' );
+		
+		// Flatten down the returned Array of Objects into just an Associative Array
+		$terms = wp_list_pluck( $terms, 'slug', 'term_id' );
+		
+		if ( ! in_array( 'radio-show', $terms ) ) return $plural_lowercase;
+		
+		return __( 'radio shows', 'gscr-cpt-radio-shows' );
 		
 	}
 	
