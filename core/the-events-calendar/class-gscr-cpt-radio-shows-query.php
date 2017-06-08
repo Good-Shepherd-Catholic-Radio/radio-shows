@@ -33,6 +33,10 @@ class GSCR_Radio_Shows_Query {
 		
 		add_filter( 'tribe_event_label_plural_lowercase', array( $this, 'tribe_event_label_plural_lowercase' ) );
 		
+		add_filter( 'template_include', array( $this, 'start_buffer' ), 99 );
+		
+		add_filter( 'shutdown', array( $this, 'remove_all_events_link' ), 0 );
+		
 	}
 	
 	public function create_term() {
@@ -208,6 +212,40 @@ class GSCR_Radio_Shows_Query {
 		
 		return __( 'radio shows', 'gscr-cpt-radio-shows' );
 		
+	}
+	
+	/**
+	 * Creates an Object Buffer for us to alter the rendered HTML later
+	 * 
+	 * @param		string Template File
+	 * 
+	 * @since		1.0.0
+	 * @return		string Template File
+	 */
+	public function start_buffer( $template ) {
+
+		ob_start();
+
+		return $template;
+
+	}
+	
+	/**
+	 * Forcibly injects Google Tag Manager code after the opening <body> tag without needing to edit header.php in the Parent Theme
+	 * 
+	 * @access		public
+	 * @since		1.0.0
+	 * @return		string HTML Content
+	 */
+	public function remove_all_events_link() {
+		
+		if ( get_post_type() !== 'tribe_events' ) return $content;
+
+		$content = ob_get_clean();
+		$content = preg_replace( '/<p(?:.*)class="tribe-events-back(?:.*)\n(?:.*)*\n(?:.*)<\/p>/im', '', $content );
+		
+		echo $content;
+
 	}
 	
 }
