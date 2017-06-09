@@ -67,7 +67,8 @@ class GSCR_Radio_Shows_Query {
 		if ( ( ! is_admin() && is_archive() ) || 
 			Tribe__Main::instance()->doing_ajax() ) {
 			
-			if ( $query->query_vars['eventDisplay'] !== 'single-event' &&
+			if ( isset( $query->query_vars['eventDisplay'] ) && 
+				$query->query_vars['eventDisplay'] !== 'single-event' &&
 				$query->query_vars['eventDisplay'] !== 'all' ) {
 			
 				$tax_query = $query->get( 'tax_query' );
@@ -241,7 +242,7 @@ class GSCR_Radio_Shows_Query {
 	 */
 	public function remove_all_events_link() {
 		
-		if ( get_post_type() !== 'tribe_events' ) return $content;
+		if ( get_post_type() !== 'tribe_events' ) return ob_get_clean();
 
 		$content = ob_get_clean();
 		$content = preg_replace( '/<p(?:.*)class="tribe-events-back(?:.*)\n(?:.*)*\n(?:.*)<\/p>/im', '', $content );
