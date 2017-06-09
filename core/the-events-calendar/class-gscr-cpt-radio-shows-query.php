@@ -242,7 +242,7 @@ class GSCR_Radio_Shows_Query {
 	 */
 	public function remove_all_events_link() {
 		
-		if ( get_post_type() !== 'tribe_events' ) return ob_get_clean();
+		if ( get_post_type() !== 'tribe_events' ) return '';
 
 		$content = ob_get_clean();
 		$content = preg_replace( '/<p(?:.*)class="tribe-events-back(?:.*)\n(?:.*)*\n(?:.*)<\/p>/im', '', $content );
