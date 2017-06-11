@@ -64,8 +64,8 @@ class GSCR_Radio_Shows_Query {
 	 */
 	public function remove_radio_shows( $query ) {
 		
-		if ( ( ! is_admin() && is_archive() ) || 
-			Tribe__Main::instance()->doing_ajax() ) {
+		if ( ( ! is_admin() && is_archive() && strpos( $_SERVER['REQUEST_URI'], 'radio-show' ) === false ) || 
+			( Tribe__Main::instance()->doing_ajax() && $query->query['tribe_events_cat'] !== 'radio-show' ) ) {
 			
 			if ( isset( $query->query_vars['eventDisplay'] ) && 
 				$query->query_vars['eventDisplay'] !== 'single-event' &&
