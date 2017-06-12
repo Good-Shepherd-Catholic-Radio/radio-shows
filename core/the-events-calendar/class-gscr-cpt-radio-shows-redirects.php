@@ -23,6 +23,8 @@ class GSCR_Radio_Shows_Redirects {
 		add_filter( 'the_permalink', array( $this, 'the_permalink' ) );	
 		add_filter( 'post_type_link', array( $this, 'get_permalink' ), 10, 4 );
 		
+		add_filter( 'tribe_get_event_link', array( $this, 'tribe_get_event_link' ), 10, 4 );
+		
 		// Ensures we land at the permastruct, in the off-chance that it is added as `/event/` somewhere
 		add_filter( 'template_include', array( $this, 'redirect_to_permastruct' ) );
 		
@@ -112,6 +114,33 @@ class GSCR_Radio_Shows_Redirects {
 		$url = str_replace( '/event/', '/radio-show/', $url );
 		
 		return $url;
+		
+	}
+		
+	/**
+	 * Force the Events Calendar to properly use my altered Links in their Views
+	 * 
+	 * @param		string  $link      Event Link
+	 * @param		integer $post_id   WP_Post ID
+	 * @param		boolean $full_link Whether to output HTML Link
+	 * @param		string  $url       Post Permalink
+	 *                                 
+	 * @access		public
+	 * @since		1.0.0
+	 * @return		string  Event Link
+	 */
+	public function tribe_get_event_link( $link, $post_id, $full_link, $url ) {
+		
+		$terms = wp_get_post_terms( $post_id, 'tribe_events_cat' );
+		
+		// Flatten down the returned Array of Objects into just an Associative Array
+		$terms = wp_list_pluck( $terms, 'slug', 'term_id' );
+		
+		if ( ! in_array( 'radio-show', $terms ) ) return $link;
+		
+		$link = str_replace( '/event/', '/radio-show/', $link );
+		
+		return $link;
 		
 	}
 	
