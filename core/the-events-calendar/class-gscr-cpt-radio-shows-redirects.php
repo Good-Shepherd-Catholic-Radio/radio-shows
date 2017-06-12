@@ -131,6 +131,10 @@ class GSCR_Radio_Shows_Redirects {
 	 */
 	public function tribe_get_event_link( $link, $post_id, $full_link, $url ) {
 		
+		global $post;
+		
+		if ( $post->post_parent !== 0 ) $post_id = $post->post_parent;
+		
 		$terms = wp_get_post_terms( $post_id, 'tribe_events_cat' );
 		
 		// Flatten down the returned Array of Objects into just an Associative Array
