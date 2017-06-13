@@ -37,6 +37,8 @@ class GSCR_Radio_Shows_Query {
 		
 		add_filter( 'shutdown', array( $this, 'remove_all_events_link' ), 0 );
 		
+		add_filter( 'post_type_labels_tribe_events', array( $this, 'post_type_labels_tribe_events' ) );
+		
 	}
 	
 	public function create_term() {
@@ -248,6 +250,37 @@ class GSCR_Radio_Shows_Query {
 		$content = preg_replace( '/<p(?:.*)class="tribe-events-back(?:.*)\n(?:.*)*\n(?:.*)<\/p>/im', '', $content );
 		
 		echo $content;
+
+	}
+	
+	/**
+	 * Relabel the Events Post Type
+	 * 
+	 * @param		object $labels Post Type Labels casted to an Object for some reason
+	 *                   
+	 * @access		public
+	 * @since 		1.0.0
+	 * @return		object Post Type Labels
+	 */
+	public function post_type_labels_tribe_events( $labels ) {
+
+		$labels->name = _x( 'Schedule', 'gscr-cpt-radio-shows' );
+		$labels->all_items = _x( 'All Schedule Items', 'gscr-cpt-radio-shows' );
+		$labels->singular_name = _x( 'Schedule Item', 'gscr-cpt-radio-shows' );
+		$labels->add_new = _x( 'Add Schedule Item', 'gscr-cpt-radio-shows' );
+		$labels->add_new_item = _x( 'Add Schedule Item', 'gscr-cpt-radio-shows' );
+		$labels->edit_item = _x( 'Edit Schedule Item', 'gscr-cpt-radio-shows' );
+		$labels->new_item = _x( 'New Schedule Item', 'gscr-cpt-radio-shows' );
+		$labels->view_item = _x( 'View Schedule Item', 'gscr-cpt-radio-shows' );
+		$labels->search_items = _x( 'Search Schedule Items', 'gscr-cpt-radio-shows' );
+		$labels->not_found = _x( 'No Schedule Items found', 'gscr-cpt-radio-shows' );
+		$labels->not_found_in_trash = _x( 'No Schedule Items found in trash', 'gscr-cpt-radio-shows' );
+		$labels->parent_item_colon = _x( 'Parent Schedule Item:', 'gscr-cpt-radio-shows' );
+		$labels->menu_name = _x( 'Schedule', 'gscr-cpt-radio-shows' );
+		$labels->name_admin_bar = _x( 'Schedule Item', 'gscr-cpt-radio-shows' );
+		$labels->archives = _x( 'Schedule Archives', 'gscr-cpt-radio-shows' );
+
+		return $labels;
 
 	}
 	

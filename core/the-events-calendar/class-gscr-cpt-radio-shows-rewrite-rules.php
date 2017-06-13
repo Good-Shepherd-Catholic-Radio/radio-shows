@@ -32,7 +32,7 @@ class GSCR_Radio_Shows_Rewrite_Rules {
 	 */
 	public function add_rewrite_rule() {
 		
-		add_rewrite_rule( 'radio-shows/?$', 'index.php?post_type=tribe_events&tribe_events_cat=radio-show&eventDisplay=week', 'top' );
+		//add_rewrite_rule( 'radio-shows/?$', 'index.php?post_type=tribe_events&tribe_events_cat=radio-show&eventDisplay=week', 'top' );
 
 		// Get Single (Not Recurring)
 		add_rewrite_rule( 'radio-show/([^/]+)/?$', 'index.php?post_type=tribe_events&tribe_events_cat=radio-show&name=$matches[1]', 'top' );
