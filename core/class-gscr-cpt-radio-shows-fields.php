@@ -37,11 +37,19 @@ class GSCR_Radio_Shows_Fields {
 		add_meta_box(
 			'radio-show-meta',
 			_x( 'Radio Show Meta', 'Metabox Title', 'gscr-cpt-radio-shows' ),
-			array( $this, 'metabox_content' ),
+			array( $this, 'radio_show_metabox_content' ),
 			'tribe_events',
 			'side'
 		);
 		
+		add_meta_box(
+			'gscr-live-radio-show',
+			'Live Radio Show Options',
+			array( $this, 'live_radio_show_metabox_content' ),
+			'tribe_events',
+			'side'
+		);
+
 	}
 	
 	/**
@@ -51,7 +59,7 @@ class GSCR_Radio_Shows_Fields {
 	 * @since		1.0.0
 	 * @return		void
 	 */
-	public function metabox_content() {
+	public function radio_show_metabox_content() {
 
 		rbm_do_field_checkbox(
 			'radio_show_live',
@@ -70,6 +78,24 @@ class GSCR_Radio_Shows_Fields {
 			)
 		);
 		
+	}
+	
+	/**
+	 * Put fields in the Metabox
+	 * 
+	 * @since       1.0.0
+	 * @return      void
+	 */
+	function live_radio_show_metabox_content() {
+
+		rbm_do_field_text(
+			'radio_show_call_in',
+			'Call-In Number',
+			false,
+			array(
+			)
+		);
+
 	}
 	
 	/**
