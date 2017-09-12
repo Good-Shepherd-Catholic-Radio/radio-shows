@@ -150,23 +150,27 @@ class GSCR_Radio_Shows_Query {
 	 */
 	public function get_terms( $terms, $taxonomies, $args, $term_query ) {
 		
+		global $allow_radio_shows;
+		
+		if ( $allow_radio_shows ) return $terms;
+		
 		if ( ( ! is_admin() || Tribe__Main::instance()->doing_ajax() ) && 
 		   in_array( 'tribe_events_cat', $taxonomies ) ) {
-			
+
 			foreach ( $terms as $index => $term_id ) {
-				
+
 				$term = get_term( $term_id );
-				
+
 				if ( $term->slug == 'radio-show' ) {
-					
+
 					unset( $terms[ $index ] );
-					
+
 				}
-				
+
 			}
-			
+
 			$terms = array_values( $terms );
-			
+
 		}
 		
 		return $terms;
