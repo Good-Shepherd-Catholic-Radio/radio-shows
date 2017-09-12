@@ -25,6 +25,8 @@ class GSCR_Radio_Shows_Query {
 		
 		add_filter( 'term_links-tribe_events_cat', array( $this, 'get_the_term_list' ) );
 		
+		add_filter( 'get_terms', array( $this, 'get_terms' ), 10, 4 );
+		
 		add_filter( 'tribe_event_label_singular', array( $this, 'tribe_event_label_singular' ) );
 		
 		add_filter( 'tribe_event_label_singular_lowercase', array( $this, 'tribe_event_label_singular_lowercase' ) );
@@ -131,6 +133,43 @@ class GSCR_Radio_Shows_Query {
 		}
 		
 		return $links;
+		
+	}
+	
+	/**
+	 * Filter terms output. This is used to prevent Radio Shows as a selection for Community Events
+	 * 
+	 * @param		array $terms      Array of found terms.
+	 * @param		array $taxonomies An array of taxonomies.
+	 * @param		array $args       An array of get_terms() arguments.
+	 * @param		array $term_query The WP_Term_Query object.
+	 *                                             
+	 * @access		public
+	 * @since		1.0.0
+	 * @return		array Terms
+	 */
+	public function get_terms( $terms, $taxonomies, $args, $term_query ) {
+		
+		if ( ( ! is_admin() || Tribe__Main::instance()->doing_ajax() ) && 
+		   in_array( 'tribe_events_cat', $taxonomies ) ) {
+			
+			foreach ( $terms as $index => $term_id ) {
+				
+				$term = get_term( $term_id );
+				
+				if ( $term->slug == 'radio-show' ) {
+					
+					unset( $terms[ $index ] );
+					
+				}
+				
+			}
+			
+			$terms = array_values( $terms );
+			
+		}
+		
+		return $terms;
 		
 	}
 	
