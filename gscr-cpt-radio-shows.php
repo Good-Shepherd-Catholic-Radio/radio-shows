@@ -9,7 +9,7 @@
  * Author URI: http://realbigmarketing.com/
  * Contributors: d4mation
  * GitHub Plugin URI: Good-Shepherd-Catholic-Radio/cpt-radio-shows
- * GitHub Branch: develop
+ * GitHub Branch: Theme-2017/issue/83/not-assigning-radio-show
  */
 
 // Exit if accessed directly
