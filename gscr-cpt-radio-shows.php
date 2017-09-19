@@ -218,6 +218,10 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 		 */
 		public function register_scripts() {
 			
+			global $allow_radio_shows;
+			
+			$allow_radio_shows = true;
+			
 			wp_register_style(
 				'gscr-cpt-radio-shows',
 				GSCR_CPT_Radio_Shows_URL . 'assets/css/style.css',
