@@ -41,8 +41,8 @@ class GSCR_Radio_Shows_Query {
 		
 		add_filter( 'post_type_labels_tribe_events', array( $this, 'post_type_labels_tribe_events' ) );
 		
-		add_action( 'wp_ajax_tribe_dropdown', array( $this, 'hijack_route' ) );
-		add_action( 'wp_ajax_nopriv_tribe_dropdown', array( $this, 'hijack_route' ) );
+		add_action( 'wp_ajax_tribe_dropdown', array( $this, 'hijack_route' ), 1 );
+		add_action( 'wp_ajax_nopriv_tribe_dropdown', array( $this, 'hijack_route' ), 1 );
 		
 	}
 	
@@ -159,7 +159,7 @@ class GSCR_Radio_Shows_Query {
 		
 		$community_base = tribe( 'community.main' )->getOption( 'communityRewriteSlug', 'community', true );
 		
-		if ( ! is_admin() && 
+		if ( ( ! is_admin() || Tribe__Main::instance()->doing_ajax() ) && 
 		   in_array( 'tribe_events_cat', $taxonomies ) ) {
 
 			foreach ( $terms as $index => $term_id ) {
