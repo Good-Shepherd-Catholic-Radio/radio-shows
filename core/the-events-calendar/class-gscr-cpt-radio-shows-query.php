@@ -27,6 +27,8 @@ class GSCR_Radio_Shows_Query {
 		
 		add_filter( 'get_terms', array( $this, 'get_terms' ), 10, 4 );
 		
+		add_action( 'tribe_events_community_form_before_template', array( $this, 'prevent_community_radio_shows' ) );
+		
 		add_filter( 'tribe_event_label_singular', array( $this, 'tribe_event_label_singular' ) );
 		
 		add_filter( 'tribe_event_label_singular_lowercase', array( $this, 'tribe_event_label_singular_lowercase' ) );
@@ -179,6 +181,13 @@ class GSCR_Radio_Shows_Query {
 		}
 		
 		return $terms;
+		
+	}
+	
+	public function prevent_community_radio_shows( $event_id ) {
+		
+		global $allow_radio_shows;
+		$allow_radio_shows = false;
 		
 	}
 	
