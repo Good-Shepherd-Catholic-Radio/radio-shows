@@ -288,8 +288,8 @@ class GSCR_Radio_Shows_Query {
 		global $wp_query;
 		
 		// I'm guessing we run out of memory in this case?
-		if ( isset( $wp_query->query['eventDisplay'] ) && 
-		   $wp_query->query['eventDisplay'] == 'all' ) {
+		if ( isset( $wp_query->query_vars['eventDisplay'] ) && 
+		   $wp_query->query_vars['eventDisplay'] == 'all' ) {
 			return $template;
 		}
 
