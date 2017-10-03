@@ -1,6 +1,6 @@
 {
 	"name": "GSCR_CPT_Radio_Shows",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"main": "gulpfile.js",
 	"dependencies": {},
 	"devDependencies": {
