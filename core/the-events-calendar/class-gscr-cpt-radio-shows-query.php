@@ -284,6 +284,14 @@ class GSCR_Radio_Shows_Query {
 	 * @return		string Template File
 	 */
 	public function start_buffer( $template ) {
+		
+		global $wp_query;
+		
+		// I'm guessing we run out of memory in this case?
+		if ( isset( $wp_query->query['eventDisplay'] ) && 
+		   $wp_query->query['eventDisplay'] == 'all' ) {
+			return $template;
+		}
 
 		ob_start();
 
