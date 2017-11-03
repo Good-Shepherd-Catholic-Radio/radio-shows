@@ -43,6 +43,9 @@
 				
 			} );
 			
+			// Only a problem for user accounts other than my own. No idea why
+			$( '#gscr-live-radio-show' ).removeAttr( 'style' ).removeClass( 'hide-if-js' );
+			
 			// Hide/show Live Radio Show options if applicable
 			$( '#radio-show-meta input[name="_rbm_radio_show_live"]' ).on( 'change', function( event ) {
 				
