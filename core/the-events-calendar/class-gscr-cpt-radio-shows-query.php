@@ -46,6 +46,8 @@ class GSCR_Radio_Shows_Query {
 		add_action( 'wp_ajax_tribe_dropdown', array( $this, 'hijack_route' ), 1 );
 		add_action( 'wp_ajax_nopriv_tribe_dropdown', array( $this, 'hijack_route' ), 1 );
 		
+		add_action( 'pre_get_posts', array( $this, 'radio_show_search' ) );
+		
 	}
 	
 	public function create_term() {
@@ -361,6 +363,53 @@ class GSCR_Radio_Shows_Query {
 		global $allow_radio_shows;
 		
 		$allow_radio_shows = false;
+		
+	}
+	
+	/**
+	 * Restrict and sort our Radio Show Searches to being only for Radio Shows in the past and showing most recent First
+	 * 
+	 * @param		object $query WP_Query Object
+	 *                                
+	 * @access		public
+	 * @since		{{VERSION}}
+	 * @return		void
+	 */
+	public function radio_show_search( $query ) {
+		
+		if ( ! is_search() ) return;
+		
+		if ( ! $query->get( 'gscr_radio_show_search' ) ) return;
+		
+		$query->set( 'post_type', 'tribe_events' );
+		
+		$query->set( 'meta_key', '_EventStartDate' );
+		$query->set( 'orderby', 'meta_value' );
+		$query->set( 'order', 'DESC' );
+		
+		$query->set( 'tax_query', array(
+			'relationship' => 'AND',
+			array(
+				'taxonomy' => 'tribe_events_cat',
+				'field' => 'slug',
+				'terms' => array( 'radio-show' ),
+				'operator' => 'IN'
+			),
+		) );
+		
+		$query->set( 'meta_query', array(
+			'relation'    => 'AND',
+			array(
+				'key' => '_EventEndDate',
+				'value' => current_time( 'Y-m-d H:i:s' ),
+				'type' => 'DATETIME',
+				'compare' => '<',
+			),
+			array(
+				'key' => '_EventHideFromUpcoming',
+				'compare' => 'NOT EXISTS',
+			),
+		) );
 		
 	}
 	

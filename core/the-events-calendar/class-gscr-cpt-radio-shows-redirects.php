@@ -28,6 +28,8 @@ class GSCR_Radio_Shows_Redirects {
 		// Ensures we land at the permastruct, in the off-chance that it is added as `/event/` somewhere
 		add_filter( 'template_include', array( $this, 'redirect_to_permastruct' ) );
 		
+		add_filter( 'template_include', array( $this, 'redirect_to_radio_show_search' ) );
+		
 	}
 	
 	/**
@@ -176,6 +178,18 @@ class GSCR_Radio_Shows_Redirects {
 		$url = str_replace( '/event/', '/radio-show/', $url );
 		
 		header( "Location: $url", true, 301 );
+		
+	}
+	
+	public function redirect_to_radio_show_search( $template ) {
+		
+		global $wp_query;
+		
+		if ( ! is_search() ) return $template;
+		
+		if ( ! $wp_query->get( 'gscr_radio_show_search' ) ) return $template;
+		
+		return locate_template( 'templates/radio-show-search.php', false, false );
 		
 	}
 	

@@ -23,6 +23,8 @@ class GSCR_Radio_Shows_Fields {
 		
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		
+		add_filter( 'rbm_load_select2', '__return_true' );
+		
 	}
 	
 	/**
@@ -44,8 +46,16 @@ class GSCR_Radio_Shows_Fields {
 		
 		add_meta_box(
 			'gscr-live-radio-show',
-			'Live Radio Show Options',
+			__( 'Live Radio Show Options', 'gscr-cpt-radio-shows' ),
 			array( $this, 'live_radio_show_metabox_content' ),
+			'tribe_events',
+			'side'
+		);
+		
+		add_meta_box(
+			'gscr-radio-show-home-page',
+			__( 'Radio Show Home Page Options', 'gscr-cpt-radio-shows' ),
+			array( $this, 'radio_show_home_page_metabox_content' ),
 			'tribe_events',
 			'side'
 		);
@@ -86,16 +96,28 @@ class GSCR_Radio_Shows_Fields {
 	 * @since       1.0.0
 	 * @return      void
 	 */
-	function live_radio_show_metabox_content() {
+	public function live_radio_show_metabox_content() {
 
 		rbm_do_field_text(
 			'radio_show_call_in',
-			'Call-In Number',
+			__( 'Call-In Number', 'grsc-cpt-radio-shows' ),
 			false,
 			array(
 			)
 		);
 
+	}
+	
+	public function radio_show_home_page_metabox_content() {
+		
+		rbm_do_field_checkbox(
+			'radio_show_on_home_page',
+			__( 'Show on the Home Page? (Listed with the linked On-Air Personality)', 'grsc-cpt-radio-shows' ),
+			false,
+			array(
+			)
+		);
+		
 	}
 	
 	/**
