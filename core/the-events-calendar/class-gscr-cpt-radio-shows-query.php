@@ -372,7 +372,7 @@ class GSCR_Radio_Shows_Query {
 	 * @param		object $query WP_Query Object
 	 *                                
 	 * @access		public
-	 * @since		{{VERSION}}
+	 * @since		1.0.4
 	 * @return		void
 	 */
 	public function radio_show_search( $query ) {
