@@ -51,14 +51,6 @@ class GSCR_Radio_Shows_Fields {
 			'tribe_events',
 			'side'
 		);
-		
-		add_meta_box(
-			'gscr-radio-show-home-page',
-			__( 'Radio Show Home Page Options', 'gscr-cpt-radio-shows' ),
-			array( $this, 'radio_show_home_page_metabox_content' ),
-			'tribe_events',
-			'side'
-		);
 
 	}
 	
@@ -88,6 +80,14 @@ class GSCR_Radio_Shows_Fields {
 			)
 		);
 		
+		rbm_do_field_checkbox(
+			'radio_show_on_home_page',
+			__( 'Show on the Home Page? (Listed with the linked On-Air Personality)', 'grsc-cpt-radio-shows' ),
+			false,
+			array(
+			)
+		);
+		
 	}
 	
 	/**
@@ -106,18 +106,6 @@ class GSCR_Radio_Shows_Fields {
 			)
 		);
 
-	}
-	
-	public function radio_show_home_page_metabox_content() {
-		
-		rbm_do_field_checkbox(
-			'radio_show_on_home_page',
-			__( 'Show on the Home Page? (Listed with the linked On-Air Personality)', 'grsc-cpt-radio-shows' ),
-			false,
-			array(
-			)
-		);
-		
 	}
 	
 	/**

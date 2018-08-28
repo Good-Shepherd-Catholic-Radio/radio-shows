@@ -261,7 +261,9 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 			wp_localize_script( 
 				'gscr-cpt-radio-shows-admin',
 				'gscrCPTRadioShows',
-				apply_filters( 'gscr_cpt_radio_shows_localize_admin_script', array() )
+				apply_filters( 'gscr_cpt_radio_shows_localize_admin_script', array(
+					'eventOptionsText' => __( 'Radio Show Options', 'gscr-cpt-radio-shows' )
+				) )
 			);
 			
 		}

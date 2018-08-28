@@ -2,6 +2,9 @@
 	
 	$( document ).ready( function() {
 		
+		var $eventOptions = $( '#tribe_events_event_options > h2 span' ),
+			eventOptionsText = $eventOptions.text();
+		
 		$( '#radio-show-meta' ).addClass( 'hidden' );
 		$( '#gscr-live-radio-show' ).addClass( 'hidden' );
 		
@@ -14,6 +17,7 @@
 				
 					if ( $( checkbox ).prop( 'checked' ) ) {
 						
+						$eventOptions.html( gscrCPTRadioShows.eventOptionsText );
 						$( '#radio-show-meta' ).removeClass( 'hidden' );
 						
 						if ( $( '#radio-show-meta input[name="_rbm_radio_show_live"]' ).is( ':checked' ) ) {
@@ -33,8 +37,10 @@
 				
 					if ( $( this ).prop( 'checked' ) ) {
 						$( '#radio-show-meta' ).removeClass( 'hidden' );
+						$eventOptions.html( gscrCPTRadioShows.eventOptionsText );
 					}
 					else {
+						$eventOptions.html( eventOptionsText );
 						$( '#radio-show-meta' ).addClass( 'hidden' );
 						$( '#gscr-live-radio-show' ).addClass( 'hidden' );
 					}
