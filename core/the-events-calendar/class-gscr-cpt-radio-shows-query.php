@@ -381,6 +381,10 @@ class GSCR_Radio_Shows_Query {
 		
 		if ( ! $query->get( 'gscr_radio_show_search' ) ) return;
 		
+		$query->set( 's', urldecode( $query->get( 's' ) ) );
+		
+		$query->set( 'sentence', true );
+		
 		$query->set( 'post_type', 'tribe_events' );
 		
 		$query->set( 'meta_key', '_EventStartDate' );
