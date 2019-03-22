@@ -46,6 +46,9 @@ class GSCR_Radio_Shows_Rewrite_Rules {
 		// Recurring (All and Single)
 		add_rewrite_rule( 'radio-show/([^/]*)/([^/]*)/?$', 'index.php?post_type=tribe_events&tribe_events_cat=radio-show&name=$matches[1]&tribe_events=$matches[1]&eventDate=$matches[2]&eventDisplay=$matches[2]', 'top' );
 		
+		// With an "Event Sequence" added to the URL
+		add_rewrite_rule( 'radio-show/([^/]*)/([^/]*)/([^/]*)/?$', 'index.php?post_type=tribe_events&tribe_events_cat=radio-show&name=$matches[1]&tribe_events=$matches[1]&eventDate=$matches[2]&eventDisplay=$matches[2]&eventSequence=$matches[3]', 'top' );
+		
 	}
 	
 	public function add_query_var( $query_vars ) {
