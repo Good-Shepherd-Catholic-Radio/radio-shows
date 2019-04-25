@@ -122,7 +122,7 @@ class GSCR_Radio_Shows_Query {
 	 * @param   string  $start_date  Start Date for the Calendar "Page"
 	 * @param   string  $end_date    End Date for the Calendar "Page"
 	 *
-	 * @since	{{VERSION}}
+	 * @since	1.0.7
 	 * @return  array                Array of Objects to use for the Calendar
 	 */
 	public function remove_radio_shows_from_month_view( $events, $start_date, $end_date ) {
