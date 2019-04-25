@@ -22,6 +22,8 @@ class GSCR_Radio_Shows_Query {
 		add_action( 'init', array( $this, 'create_term' ), 11 );
 		
 		add_action( 'tribe_events_pre_get_posts', array( $this, 'remove_radio_shows' ), 999 );
+
+		add_filter( 'tribe_events_month_get_events_in_month', array( $this, 'remove_radio_shows_from_month_view'), 10, 3 );
 		
 		add_filter( 'term_links-tribe_events_cat', array( $this, 'get_the_term_list' ) );
 		
@@ -112,6 +114,83 @@ class GSCR_Radio_Shows_Query {
 		}
 		
 	}
+
+	/**
+	 * Remove Radio Shows from the Month View (Calendar) in Events Calendar v3.9.0+
+	 *
+	 * @param   null    $events      Null to use their hard-coded SQL, return anything else to use your own data
+	 * @param   string  $start_date  Start Date for the Calendar "Page"
+	 * @param   string  $end_date    End Date for the Calendar "Page"
+	 *
+	 * @since	{{VERSION}}
+	 * @return  array                Array of Objects to use for the Calendar
+	 */
+	public function remove_radio_shows_from_month_view( $events, $start_date, $end_date ) {
+
+		$events_query = new WP_Query( array(
+			'post_type' => 'tribe_events',
+			'posts_per_page' => -1,
+			'eventDisplay' => 'custom',
+			'orderby' => array(
+				'menu_order' => 'ASC',
+				'meta_value' => 'ASC',
+			),
+			'meta_key' => '_EventStartDate',
+			'fields' => 'ids',
+			'tax_query' => array(
+				'relationship' => 'AND',
+				array(
+					'taxonomy' => 'tribe_events_cat',
+					'field' => 'slug',
+					'terms' => array( 'radio-show' ),
+					'operator' => 'NOT IN'
+				),
+			),
+			'meta_query'     => array(
+				'relation'    => 'AND',
+				array(
+					'key' => '_EventStartDate',
+					'value' => $start_date,
+					'type' => 'DATETIME',
+					'compare' => '>=',
+				),
+				array(
+					'key' => '_EventEndDate',
+					'value' => $end_date,
+					'type' => 'DATETIME',
+					'compare' => '<',
+				),
+				array(
+					'key' => '_EventHideFromUpcoming',
+					'compare' => 'NOT EXISTS',
+				),
+			),
+		) );
+
+		if ( $events_query->have_posts() ) {
+
+			$events = array();
+
+			foreach ( $events_query->posts as $event_id ) {
+
+				$event = new stdClass();
+
+				// The way they are normally querying this expects the data to be stored this way
+				$event->ID = (string) $event_id;
+				$event->EventStartDate = get_post_meta( $event_id, '_EventStartDate', true );
+				$event->EventEndDate = get_post_meta( $event_id, '_EventEndDate', true );
+
+				$events[] = $event;
+
+			}
+
+			return $events;
+
+		}
+
+		return $events;
+
+	}
 	
 	/**
 	 * Excludes Radio Shows from any front-end list of Terms
@@ -160,6 +239,8 @@ class GSCR_Radio_Shows_Query {
 		global $allow_radio_shows;
 		
 		if ( $allow_radio_shows ) return $terms;
+
+		if ( ! class_exists( 'Tribe__Events__Community__Main' ) ) return $terms;
 		
 		$community_base = tribe( 'community.main' )->getOption( 'communityRewriteSlug', 'community', true );
 		
