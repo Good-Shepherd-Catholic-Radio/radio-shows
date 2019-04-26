@@ -116,7 +116,7 @@ class GSCR_Radio_Shows_Query {
 	}
 
 	/**
-	 * Remove Radio Shows from the Month View (Calendar) in Events Calendar v3.9.0+
+	 * Remove Radio Shows from the Month View (Calendar) in Events Calendar v4.9.0+
 	 *
 	 * @param   null    $events      Null to use their hard-coded SQL, return anything else to use your own data
 	 * @param   string  $start_date  Start Date for the Calendar "Page"
