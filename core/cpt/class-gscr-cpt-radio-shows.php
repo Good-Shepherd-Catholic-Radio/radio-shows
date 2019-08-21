@@ -58,6 +58,10 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
 		add_filter( "post_type_labels_$this->post_type", array( $this, 'change_featured_image_banner_labels' ) );
+
+		add_action( 'init', array( $this, 'register_post_status' ) );
+
+		add_action( 'save_post', array( $this, 'create_child_radio_shows' ) );
 		
 	}
 	
@@ -280,6 +284,113 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		$labels->use_featured_image = __( 'Use as Logo Image', 'gscr-cpt-radio-shows' );
 
 		return $labels;
+
+	}
+
+	/**
+	 * Create/Update/Delete Child Radio Shows which are used for determining our Schedule
+	 *
+	 * @param   integer  $post_id  WP_Post ID
+	 *
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
+	public function create_child_radio_shows( $post_id ) {
+
+		if ( get_post_type( $post_id ) !== 'radio-show' ) 
+			return;
+	
+		// Autosave, do nothing
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
+			return;
+
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) 
+			return;
+		
+		// Check user permissions
+		if ( ! current_user_can( 'edit_post', $post_id ) )
+			return;
+		
+		// Return if it's a post revision
+		if ( false !== wp_is_post_revision( $post_id ) )
+			return;
+
+		// Delete Occurrences that have been "marked for deletion"
+		if ( isset( $_POST['rbm_cpts_radio_show_occurrences_to_delete'] ) ) {
+
+			$delete_ids = explode( ',', $_POST['rbm_cpts_radio_show_occurrences_to_delete'] );
+
+			foreach ( $delete_ids as $id ) {
+
+				// Make sure a default ID didn't make it through somehow
+				if ( (int) $id == 0 ) continue;
+
+				wp_delete_post( (int) $id, true );
+
+			}
+
+		}
+
+		if ( isset( $_POST['rbm_cpts_radio_show_times'] ) ) {
+
+			// Prevent accidentally causing an infinite loop
+			remove_action( 'save_post', array( $this, 'create_child_radio_shows' ) );
+
+			foreach ( $_POST['rbm_cpts_radio_show_times'] as &$occurrence ) {
+
+				// Allow creating a new one if needed
+				$occurrence_id = ( $occurrence['post_id'] ) ? $occurrence['post_id'] : 0;
+
+				$created_id = wp_insert_post( array(
+					'ID' => $occurrence_id,
+					'post_type' => 'radio-show',
+					'post_title' => $_POST['post_title'],
+					'post_content' => $_POST['post_content'],
+					'post_parent' => $post_id,
+					'post_status' => 'radioshow-occurrence', // Use custom Post Status to prevent it from being accessible on the frontend outside of our schedule-building queries
+				), true );
+
+				if ( is_wp_error( $created_id ) ) {
+					$errors = implode( ';', $created_id->get_error_messages() );
+					error_log( $errors );
+					continue;
+				}
+
+				// Save here in the Parent
+				$occurrence['post_id'] = $created_id;
+
+				foreach ( $occurrence as $meta_key => $meta_value ) {
+
+					// No point in storing this
+					if ( $meta_key == 'post_id' ) continue;
+
+					// Assign to the Child so we can use this information for sorting/querying outside of a Serialized Repeater
+					update_post_meta( $created_id, "rbm_cpts_$meta_key", $meta_value );
+
+				}
+
+			}
+
+			add_action( 'save_post', array( $this, 'create_child_radio_shows' ) );
+
+			// Update with our changes to include Post IDs
+			update_post_meta( $post_id, 'rbm_cpts_radio_show_times', $_POST['rbm_cpts_radio_show_times'] );
+
+		}
+
+	}
+
+	public function register_post_status() {
+
+		register_post_status( 'radioshow-occurrence', array(
+			'label' => __( 'Radio Show Occurrence (Hidden)', 'gscr-cpt-radio-shows' ),
+			'public' => false, // We're going to show all data on a main, Single template for the parent
+			'exclude_from_search' => true,
+			'show_in_admin_all_list' => false,
+			'show_in_admin_status_list' => false,
+			'post_type' => 'radio-show',
+			'internal' => true,
+		) );
 
 	}
 	
