@@ -48,6 +48,8 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		);
 
 		parent::__construct();
+
+		add_action( 'init', array( $this, 'register_taxonomy' ) );
 		
 		add_filter( "manage_{$this->post_type}_posts_columns", array( $this, 'admin_column_add' ) );
 		
@@ -66,6 +68,62 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
 		
 	}
+
+	public function register_taxonomy() {
+
+		$args = array(
+            'hierarchical'          => true,
+            'labels'                => $this->get_taxonomy_labels( __( 'Category', 'gscr-cpt-radio-shows' ), __( 'Categories', 'gscr-cpt-radio-shows' ) ),
+            'show_in_menu'          => true,
+            'show_ui'               => true,
+            'show_admin_column'     => true,
+            'update_count_callback' => '_update_post_term_count',
+            'query_var'             => true,
+            'rewrite'               => array( 'slug' => 'radio-show-category' ),
+        );
+    
+        register_taxonomy( 'radio-show-category', 'radio-show', $args );
+
+	}
+
+	/**
+     * DRYs up the code above a little
+     *
+     * @param   [string]  $singular   Singular Label
+     * @param   [string]  $plural     Plural Label
+     * @param   [string]  $menu_name  Menu Label. Defaults to Plural Label
+     *
+     * @since   {{VERSION}}
+     * @return  [array]               Taxonomy Labels
+     */
+    private function get_taxonomy_labels( $singular, $plural, $menu_name = false ) {
+
+        if ( ! $menu_name ) {
+            $menu_name = $plural;
+        }
+
+        $labels = array(
+            'name'                       => $menu_name,
+            'singular_name'              => $singular,
+            'search_items'               => sprintf( __( 'Search %', 'gscr-cpt-radio-shows' ), $plural ),
+            'popular_items'              => sprintf( __( 'Popular %s', 'gscr-cpt-radio-shows' ), $plural ),
+            'all_items'                  => sprintf( __( 'All %', 'gscr-cpt-radio-shows' ), $plural ),
+            'parent_item'                => sprintf( __( 'Parent %s', 'gscr-cpt-radio-shows' ), $singular ),
+            'parent_item_colon'          => sprintf( __( 'Parent %s:', 'gscr-cpt-radio-shows' ), $singular ),
+            'edit_item'                  => sprintf( __( 'Edit %s', 'gscr-cpt-radio-shows' ), $singular ),
+            'update_item'                => sprintf( __( 'Update %s', 'gscr-cpt-radio-shows' ), $singular ),
+            'add_new_item'               => sprintf( __( 'Add New %s', 'gscr-cpt-radio-shows' ), $singular ),
+            'new_item_name'              => sprintf( __( 'New %s Name', 'gscr-cpt-radio-shows' ), $singular ),
+            'separate_items_with_commas' => sprintf( __( 'Separate %s with commas', 'gscr-cpt-radio-shows' ), $plural ),
+            'add_or_remove_items'        => sprintf( __( 'Add or remove %s', 'gscr-cpt-radio-shows' ), $plural ),
+            'choose_from_most_used'      => sprintf( __( 'Choose from the most used %s', 'gscr-cpt-radio-shows' ), $plural ),
+            'not_found'                  => sprintf( __( 'No %s found.', 'gscr-cpt-radio-shows' ), $plural ),
+            'menu_name'                  => $menu_name,
+        );
+
+        return $labels;
+
+    }
 	
 	/**
 	 * Adds an Admin Column
