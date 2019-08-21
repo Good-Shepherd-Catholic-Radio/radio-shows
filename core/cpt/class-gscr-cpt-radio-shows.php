@@ -62,6 +62,8 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		add_action( 'init', array( $this, 'register_post_status' ) );
 
 		add_action( 'save_post', array( $this, 'create_child_radio_shows' ) );
+
+		add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
 		
 	}
 	
@@ -391,6 +393,27 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 			'post_type' => 'radio-show',
 			'internal' => true,
 		) );
+
+	}
+
+	public function before_delete_post( $post_id ) {
+
+		// Watch only Courses
+		if ( get_post_type( $post_id ) !== 'radio-show' ) return;
+		
+		$query = new WP_Query( array(
+			'post_type' => 'radio-show',
+			'post_status' => 'radioshow-occurrence',
+			'post_parent' => $post_id,
+			'posts_per_page' => -1,
+			'fields' => 'ids',
+		) );
+
+		if ( ! $query->have_posts() ) return;
+
+		foreach ( $query->posts as $delete_id ) {
+			wp_delete_post( $delete_id, true );
+		}
 
 	}
 	
