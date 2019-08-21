@@ -124,7 +124,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	public function add_meta_boxes() {
 
 		add_meta_box(
-			'radio-show-meta',
+			'radio-show-occurrences',
 			__( 'Radio Show Occurrences', 'gscr-cpt-radio-shows' ),
 			array( $this, 'radio_show_metabox_content' ),
 			$this->post_type,
