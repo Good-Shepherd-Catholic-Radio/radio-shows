@@ -398,7 +398,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 	public function before_delete_post( $post_id ) {
 
-		// Watch only Courses
+		// Watch only Radio Shows
 		if ( get_post_type( $post_id ) !== 'radio-show' ) return;
 		
 		$query = new WP_Query( array(
