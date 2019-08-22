@@ -232,7 +232,8 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 						'options' => array(
 							'live' => __( 'Live', 'gscr-cpt-radio-shows' ),
 							'encore' => __( 'Encore', 'gscr-cpt-radio-shows' ),
-							'none' => __( 'Neither', 'gscr-cpt-radio-shows' ),
+							'pre_recorded' => __( 'Pre-Recorded', 'gscr-cpt-radio-shows' ),
+							'other' => __( 'Other', 'gscr-cpt-radio-shows' ),
 						),
 					),
 				),
