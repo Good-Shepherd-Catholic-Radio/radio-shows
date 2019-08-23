@@ -1,1 +1,0 @@
-{"version":3,"sources":["rbm-field-helpers/_select.scss"],"names":[],"mappings":"AAAA,mFAGQ,YAAc,CACjB","file":"admin.css","sourcesContent":[".fieldhelpers-field-select[data-fieldhelpers-name=\"day_of_the_week\"] {\n\n    .select2-search {\n        display: none;\n    }\n\n}"]}

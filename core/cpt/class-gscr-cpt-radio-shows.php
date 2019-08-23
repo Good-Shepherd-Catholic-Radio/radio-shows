@@ -253,7 +253,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 					'type' => 'hook',
 					'args' => array(
 						'fields' => array(
-							'day_of_the_week' => array(
+							'days_of_the_week' => array(
 								'type' => 'select',
 								'args' => array(
 									'label' => '<strong>' . __( 'Day(s) of the Week', 'gscr-cpt-radio-shows' ) . '</strong>',
@@ -296,9 +296,12 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 						),
 					),
 				),
-				'post_id' => array(
+				'post_ids' => array(
 					'type' => 'hidden',
-				)
+				),
+				'post_ids_to_delete' => array(
+					'type' => 'hidden',
+				),
 			),
 		) );
 
@@ -471,36 +474,51 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 			foreach ( $_POST['rbm_cpts_radio_show_times'] as &$occurrence ) {
 
-				// Allow creating a new one if needed
-				$occurrence_id = ( $occurrence['post_id'] ) ? $occurrence['post_id'] : 0;
+				$occurrence_ids = json_decode( $occurrence['post_ids'], true );
+				$occurrence_ids = ( $occurrence_ids ) ? $occurrence_ids : array();
 
-				$created_id = wp_insert_post( array(
-					'ID' => $occurrence_id,
-					'post_type' => 'radio-show',
-					'post_title' => $_POST['post_title'],
-					'post_content' => $_POST['post_content'],
-					'post_parent' => $post_id,
-					'post_status' => 'radioshow-occurrence', // Use custom Post Status to prevent it from being accessible on the frontend outside of our schedule-building queries
-				), true );
+				$default_days = array();
+				foreach ( $occurrence['days_of_the_week'] as $day_index ) {
+					$default_days[ $day_index ] = 0;
+				}
 
-				if ( is_wp_error( $created_id ) ) {
-					$errors = implode( ';', $created_id->get_error_messages() );
-					error_log( $errors );
-					continue;
+				// Allow creating a new Occurrence for a Day if needed
+				$occurrence_ids = $default_days + $occurrence_ids;
+
+				foreach ( $occurrence_ids as $day_index => $occurrence_id ) {
+
+					$created_id = wp_insert_post( array(
+						'ID' => $occurrence_id,
+						'post_type' => 'radio-show',
+						'post_title' => $_POST['post_title'],
+						'post_content' => $_POST['post_content'],
+						'post_parent' => $post_id,
+						'post_status' => 'radioshow-occurrence', // Use custom Post Status to prevent it from being accessible on the frontend outside of our schedule-building queries
+					), true );
+	
+					if ( is_wp_error( $created_id ) ) {
+						$errors = implode( ';', $created_id->get_error_messages() );
+						error_log( $errors );
+						continue;
+					}
+
+					// Setting here for later
+					$occurrence_ids[ $day_index ] = $created_id;
+
+					foreach ( $occurrence as $meta_key => $meta_value ) {
+
+						// No point in storing this
+						if ( $meta_key == 'post_ids' ) continue;
+	
+						// Assign to the Child so we can use this information for sorting/querying outside of a Serialized Repeater
+						update_post_meta( $created_id, "rbm_cpts_$meta_key", $meta_value );
+	
+					}
+
 				}
 
 				// Save here in the Parent
-				$occurrence['post_id'] = $created_id;
-
-				foreach ( $occurrence as $meta_key => $meta_value ) {
-
-					// No point in storing this
-					if ( $meta_key == 'post_id' ) continue;
-
-					// Assign to the Child so we can use this information for sorting/querying outside of a Serialized Repeater
-					update_post_meta( $created_id, "rbm_cpts_$meta_key", $meta_value );
-
-				}
+				$occurrence['post_ids'] = json_encode( $occurrence_ids, JSON_FORCE_OBJECT );
 
 			}
 

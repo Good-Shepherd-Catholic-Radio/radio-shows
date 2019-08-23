@@ -229,14 +229,14 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 			
 			wp_register_style(
 				'gscr-cpt-radio-shows',
-				GSCR_CPT_Radio_Shows_URL . 'assets/css/style.css',
+				GSCR_CPT_Radio_Shows_URL . 'dist/assets/css/style.css',
 				null,
 				defined( 'WP_DEBUG' ) && WP_DEBUG ? time() : GSCR_CPT_Radio_Shows_VER
 			);
 			
 			wp_register_script(
 				'gscr-cpt-radio-shows',
-				GSCR_CPT_Radio_Shows_URL . 'assets/js/script.js',
+				GSCR_CPT_Radio_Shows_URL . 'dist/assets/js/script.js',
 				array( 'jquery' ),
 				defined( 'WP_DEBUG' ) && WP_DEBUG ? time() : GSCR_CPT_Radio_Shows_VER,
 				true
@@ -250,14 +250,14 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 			
 			wp_register_style(
 				'gscr-cpt-radio-shows-admin',
-				GSCR_CPT_Radio_Shows_URL . 'assets/css/admin.css',
+				GSCR_CPT_Radio_Shows_URL . 'dist/assets/css/admin.css',
 				null,
 				defined( 'WP_DEBUG' ) && WP_DEBUG ? time() : GSCR_CPT_Radio_Shows_VER
 			);
 			
 			wp_register_script(
 				'gscr-cpt-radio-shows-admin',
-				GSCR_CPT_Radio_Shows_URL . 'assets/js/admin.js',
+				GSCR_CPT_Radio_Shows_URL . 'dist/assets/js/admin.js',
 				array( 'jquery' ),
 				defined( 'WP_DEBUG' ) && WP_DEBUG ? time() : GSCR_CPT_Radio_Shows_VER,
 				true
