@@ -71,6 +71,13 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		
 	}
 
+	/**
+	 * Registers our Radio Show Categories Taxonomy
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
 	public function register_taxonomy() {
 
 		$args = array(
@@ -183,6 +190,13 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		
 	}
 
+	/**
+	 * Registers our Meta Boxes
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
 	public function add_meta_boxes() {
 
 		add_meta_box(
@@ -221,6 +235,13 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 	}
 
+	/**
+	 * Adds Metabox Content for our Radio Show Occurrences Meta Box
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
 	public function radio_show_metabox_content() {
 
 		rbm_cpts_do_field_repeater( array(
@@ -289,6 +310,13 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 	}
 
+	/**
+	 * Adds Metabox Content for our Radio Show Metabox on the side
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
 	public function radio_show_side_metabox_content() {
 
 		rbm_cpts_do_field_checkbox( array(
@@ -309,6 +337,13 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 	}
 
+	/**
+	 * Adds Metabox Content for our Background Image Meta Box
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
 	public function radio_show_background_image_metabox_content() {
 
 		rbm_cpts_do_field_media( array(
@@ -321,6 +356,13 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 	}
 
+	/**
+	 * Adds Metabox Content for our Headshot Image Meta Box
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
 	public function radio_show_headshot_image_metabox_content() {
 
 		rbm_cpts_do_field_media( array(
@@ -333,6 +375,13 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 	}
 
+	/**
+	 * Enqueues the necessary JS/CSS on the Radio Show Edit Screen
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
 	public function admin_enqueue_scripts() {
 
 		$current_screen = get_current_screen();
@@ -354,7 +403,8 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * Change Featured Image Labels Radio Shows
 	 * 
 	 * @param		array $labels Featured Image Labels
-	 *                                      
+	 *            
+	 * @access		public                          
 	 * @since		{{VERSION}}
 	 * @return		array Featured Image Labels
 	 */
@@ -374,6 +424,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 *
 	 * @param   integer  $post_id  WP_Post ID
 	 *
+	 * @access	public
 	 * @since	{{VERSION}}
 	 * @return  void
 	 */
@@ -462,6 +513,13 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 	}
 
+	/**
+	 * Creates our custom Post Status which is applied to Radio Show Occurrences
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
 	public function register_post_status() {
 
 		register_post_status( 'radioshow-occurrence', array(
@@ -476,6 +534,15 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 	}
 
+	/**
+	 * Deletes all stored Radio Show Occurrences for a Radio Show on Deletion from the Trash
+	 *
+	 * @param   integer  $post_id  WP_Post ID
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
 	public function before_delete_post( $post_id ) {
 
 		// Watch only Radio Shows
@@ -497,20 +564,34 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 	}
 
+	/**
+	 * Outputs our Day and Time fields. These are done within a Hook in order to wrap them all within a single Field as a way to make a column
+	 *
+	 * @param   array  $args   Hook Field Args
+	 * @param   array  $value  Values for the current Repeater Row
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
 	public function add_day_time_fields( $args, $value ) {
 
 		foreach ( $args['fields'] as $field_name => $field ) {
 
+			// If there's no previously saved values, then the Repeater will not know that a default value should exist for these indices
 			if ( ! isset( $value[ $field_name ] ) ) {
 				$value[ $field_name ] = '';
 			}
 
+			// Tell RBM FH that these are within our Repeater
 			$field['args']['repeater'] = 'rbm_cpts_radio_show_times';
 			$field['args']['no_init']  = true;
 
+			// Ensure the name and value properties are populated correctly
 			$field['args']['id']    = "{$field['args']['repeater']}_{$field_name}";
 			$field['args']['value'] = $value[ $field_name ];
 
+			// Create the fields
 			call_user_func(
 				array(
 					$args['fields_instance'],
