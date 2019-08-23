@@ -451,10 +451,40 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		if ( false !== wp_is_post_revision( $post_id ) )
 			return;
 
-		// Delete Occurrences that have been "marked for deletion"
-		if ( isset( $_POST['rbm_cpts_radio_show_occurrences_to_delete'] ) ) {
+		$to_delete = array();
 
-			$delete_ids = explode( ',', $_POST['rbm_cpts_radio_show_occurrences_to_delete'] );
+		// Gather any deletions caused by unchecking a day
+		if ( isset( $_POST['rbm_cpts_radio_show_times'] ) ) {
+
+			foreach ( $_POST['rbm_cpts_radio_show_times'] as $occurrence ) {
+
+				$delete_ids = json_decode( stripslashes( $occurrence['post_ids_to_delete'] ), true );
+				$delete_ids = ( $delete_ids ) ? $delete_ids : array();
+
+				foreach ( $delete_ids as $delete_id ) {
+					$to_delete[] = $delete_id;
+				}
+
+			}
+
+		}
+
+		// Delete Occurrences that have been "marked for deletion"
+		if ( isset( $_POST['rbm_cpts_radio_show_occurrences_to_delete'] ) || ! empty( $to_delete ) ) {
+
+			if ( isset( $_POST['rbm_cpts_radio_show_occurrences_to_delete'] ) ) {
+				$delete_ids = explode( ',', $_POST['rbm_cpts_radio_show_occurrences_to_delete'] );
+			}
+			else {
+				$delete_ids = array();
+			}
+
+			$delete_ids = array_filter( $delete_ids, function( $item ) {
+				return $item !== '';
+			} );
+
+			// Ensure we also delete any "pending" Deletions which would have happened from unchecking a day
+			$delete_ids = array_merge( $delete_ids, $to_delete );
 
 			foreach ( $delete_ids as $id ) {
 
@@ -474,7 +504,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 			foreach ( $_POST['rbm_cpts_radio_show_times'] as &$occurrence ) {
 
-				$occurrence_ids = json_decode( $occurrence['post_ids'], true );
+				$occurrence_ids = json_decode( stripslashes( $occurrence['post_ids'] ), true );
 				$occurrence_ids = ( $occurrence_ids ) ? $occurrence_ids : array();
 
 				$default_days = array();
@@ -483,7 +513,13 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 				}
 
 				// Allow creating a new Occurrence for a Day if needed
-				$occurrence_ids = $default_days + $occurrence_ids;
+				foreach ( $default_days as $day_index => $value ) {
+
+					if ( ! isset( $occurrence_ids[ $day_index ] ) ) {
+						$occurrence_ids[ $day_index ] = 0;
+					}
+
+				}
 
 				foreach ( $occurrence_ids as $day_index => $occurrence_id ) {
 
@@ -508,12 +544,15 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 					foreach ( $occurrence as $meta_key => $meta_value ) {
 
 						// No point in storing this
-						if ( $meta_key == 'post_ids' ) continue;
+						if ( $meta_key == 'post_ids' || $meta_key == 'rbm_cpts_post_ids_to_delete' ) continue;
 	
 						// Assign to the Child so we can use this information for sorting/querying outside of a Serialized Repeater
 						update_post_meta( $created_id, "rbm_cpts_$meta_key", $meta_value );
 	
 					}
+
+					// Ensure our day of the week gets saved
+					update_post_meta( $created_id, 'rbm_cpts_day_of_the_week', $day_index );
 
 				}
 
