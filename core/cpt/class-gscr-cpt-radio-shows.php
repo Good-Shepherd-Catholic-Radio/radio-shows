@@ -66,6 +66,8 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		add_action( 'save_post', array( $this, 'create_child_radio_shows' ) );
 
 		add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
+
+		add_action( 'rbm_cpts_radio_show_day_and_time', array( $this, 'add_day_time_fields' ), 10, 2 );
 		
 	}
 
@@ -224,7 +226,39 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		rbm_cpts_do_field_repeater( array(
 			'name' => 'radio_show_times',
 			'group' => 'radio_show_meta',
+			'sortable' => false,
 			'fields' => array(
+				'radio_show_day_and_time' => array(
+					'type' => 'hook',
+					'args' => array(
+						'fields' => array(
+							'day_of_the_week' => array(
+								'type' => 'select',
+								'args' => array(
+									'label' => '<strong>' . __( 'Day(s) of the Week', 'gscr-cpt-radio-shows' ) . '</strong>',
+									'options' => gscr_get_weekdays(),
+									'multiple' => true,
+								),
+							),
+							'start_time' => array(
+								'type' => 'timepicker',
+								'args' => array(
+									'label' => '<strong>' . __( 'Start Time', 'gscr-cpt-radio-shows' ) . '</strong>',
+								),
+							),
+							'end_time' => array(
+								'type' => 'timepicker',
+								'args' => array(
+									'label' => '<strong>' . __( 'End Time', 'gscr-cpt-radio-shows' ) . '</strong>',
+								),
+							),
+						),
+						'wrapper_classes' => array(
+							'fieldhelpers-col',
+							'fieldhelpers-col-2',
+						),
+					),
+				),
 				'broadcast_type' => array(
 					'type' => 'radio',
 					'args' => array(
@@ -235,26 +269,10 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 							'pre_recorded' => __( 'Pre-Recorded', 'gscr-cpt-radio-shows' ),
 							'other' => __( 'Other', 'gscr-cpt-radio-shows' ),
 						),
-					),
-				),
-				'day_of_the_week' => array(
-					'type' => 'select',
-					'args' => array(
-						'label' => '<strong>' . __( 'Day of the Week', 'gscr-cpt-radio-shows' ) . '</strong>',
-						'options' => gscr_get_weekdays(),
-						'select2_disable' => true,
-					),
-				),
-				'start_time' => array(
-					'type' => 'timepicker',
-					'args' => array(
-						'label' => '<strong>' . __( 'Start Time', 'gscr-cpt-radio-shows' ) . '</strong>',
-					),
-				),
-				'end_time' => array(
-					'type' => 'timepicker',
-					'args' => array(
-						'label' => '<strong>' . __( 'End Time', 'gscr-cpt-radio-shows' ) . '</strong>',
+						'wrapper_classes' => array(
+							'fieldhelpers-col',
+							'fieldhelpers-col-2',
+						),
 					),
 				),
 				'post_id' => array(
@@ -324,6 +342,9 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 			( in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) ) ) {
 
 			wp_enqueue_script( 'gscr-cpt-radio-shows-admin' );
+			wp_enqueue_style( 'gscr-cpt-radio-shows-admin' );
+
+			add_filter( 'rbm_fieldhelpers_load_select2', '__return_true' );
 
 		}
 
@@ -472,6 +493,33 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 		foreach ( $query->posts as $delete_id ) {
 			wp_delete_post( $delete_id, true );
+		}
+
+	}
+
+	public function add_day_time_fields( $args, $value ) {
+
+		foreach ( $args['fields'] as $field_name => $field ) {
+
+			if ( ! isset( $value[ $field_name ] ) ) {
+				$value[ $field_name ] = '';
+			}
+
+			$field['args']['repeater'] = 'rbm_cpts_radio_show_times';
+			$field['args']['no_init']  = true;
+
+			$field['args']['id']    = "{$field['args']['repeater']}_{$field_name}";
+			$field['args']['value'] = $value[ $field_name ];
+
+			call_user_func(
+				array(
+					$args['fields_instance'],
+					"do_field_$field[type]",
+				),
+				$field_name,
+				$field['args']
+			);
+
 		}
 
 	}
