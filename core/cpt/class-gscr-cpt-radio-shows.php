@@ -269,12 +269,14 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 								'type' => 'timepicker',
 								'args' => array(
 									'label' => '<strong>' . __( 'Start Time', 'gscr-cpt-radio-shows' ) . '</strong>',
+									'default' => date_i18n( 'H:i', strtotime( 'noon' ) ),
 								),
 							),
 							'end_time' => array(
 								'type' => 'timepicker',
 								'args' => array(
 									'label' => '<strong>' . __( 'End Time', 'gscr-cpt-radio-shows' ) . '</strong>',
+									'default' => date_i18n( 'H:i', strtotime( 'noon' ) ),
 								),
 							),
 						),
