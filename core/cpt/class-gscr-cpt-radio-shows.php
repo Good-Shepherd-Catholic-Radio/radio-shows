@@ -65,6 +65,10 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 		add_action( 'save_post', array( $this, 'create_child_radio_shows' ) );
 
+		add_action( 'wp_trash_post', array( $this, 'before_trash_post' ) );
+
+		add_action( 'untrash_post', array( $this, 'before_untrash_post' ) );
+
 		add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
 
 		add_action( 'rbm_cpts_radio_show_day_and_time', array( $this, 'add_day_time_fields' ), 10, 2 );
@@ -502,6 +506,8 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 			// Prevent accidentally causing an infinite loop
 			remove_action( 'save_post', array( $this, 'create_child_radio_shows' ) );
 
+			$post_status = ( isset( $_POST['post_status'] ) && $_POST['post_status'] == 'publish' ) ? 'radioshow-occurrence' : 'radioshow-draft';
+
 			foreach ( $_POST['rbm_cpts_radio_show_times'] as &$occurrence ) {
 
 				$occurrence_ids = json_decode( stripslashes( $occurrence['post_ids'] ), true );
@@ -529,7 +535,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 						'post_title' => $_POST['post_title'],
 						'post_content' => $_POST['post_content'],
 						'post_parent' => $post_id,
-						'post_status' => 'radioshow-occurrence', // Use custom Post Status to prevent it from being accessible on the frontend outside of our schedule-building queries
+						'post_status' => $post_status, // Use custom Post Status to prevent it from being accessible on the frontend outside of our schedule-building queries
 					), true );
 	
 					if ( is_wp_error( $created_id ) ) {
@@ -589,6 +595,102 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 			'internal' => true,
 		) );
 
+		register_post_status( 'radioshow-draft', array(
+			'label' => __( 'Radio Show Occurrence Draft (Hidden)', 'gscr-cpt-radio-shows' ),
+			'public' => false, // We're going to show all data on a main, Single template for the parent
+			'exclude_from_search' => true,
+			'show_in_admin_all_list' => false,
+			'show_in_admin_status_list' => false,
+			'post_type' => 'radio-show',
+			'internal' => true,
+		) );
+
+	}
+
+	/**
+	 * Runs before Trashing a Radio Show. This is different from Deletion
+	 *
+	 * @param   integer  $post_id  WP_Post ID
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
+	public function before_trash_post( $post_id ) {
+
+		// Watch only Radio Shows
+		if ( get_post_type( $post_id ) !== 'radio-show' ) return;
+
+		remove_action( 'save_post', array( $this, 'create_child_radio_shows' ) );
+		
+		$query = new WP_Query( array(
+			'post_type' => 'radio-show',
+			'post_status' => 'radioshow-occurrence',
+			'post_parent' => $post_id,
+			'posts_per_page' => -1,
+			'fields' => 'ids',
+		) );
+
+		if ( ! $query->have_posts() ) return;
+
+		foreach ( $query->posts as $delete_id ) {
+
+			$radio_show = get_post( $delete_id );
+
+			$error = wp_insert_post( array(
+				'ID' => $delete_id,
+				'post_type' => 'radio-show',
+				'post_status' => 'radioshow-draft',
+				'post_title' => $radio_show->post_title,
+				'post_content' => $radio_show->post_content,
+				'post_parent' => $post_id,
+			), true );
+
+		}
+
+	}
+
+	/**
+	 * Runs before Restoring a deleted Radio Show
+	 *
+	 * @param   integer  $post_id  WP_Post ID
+	 *
+	 * @access	public
+	 * @since	{{VERSION}}
+	 * @return  void
+	 */
+	public function before_untrash_post( $post_id ) {
+
+		// Watch only Radio Shows
+		if ( get_post_type( $post_id ) !== 'radio-show' ) return;
+
+		remove_action( 'save_post', array( $this, 'create_child_radio_shows' ) );
+		
+		$query = new WP_Query( array(
+			'post_type' => 'radio-show',
+			'post_status' => 'radioshow-draft',
+			'post_parent' => $post_id,
+			'posts_per_page' => -1,
+			'fields' => 'ids',
+		) );
+
+		if ( ! $query->have_posts() ) return;
+
+		foreach ( $query->posts as $delete_id ) {
+
+			$radio_show = get_post( $delete_id );
+
+			$error = wp_insert_post( array(
+				'ID' => $delete_id,
+				'post_type' => 'radio-show',
+				'post_status' => 'radioshow-occurrence',
+				'post_title' => $radio_show->post_title,
+				'post_content' => $radio_show->post_content,
+				'post_parent' => $post_id,
+			), true );
+
+		}
+
 	}
 
 	/**
@@ -607,7 +709,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		
 		$query = new WP_Query( array(
 			'post_type' => 'radio-show',
-			'post_status' => 'radioshow-occurrence',
+			'post_status' => 'radioshow-draft',
 			'post_parent' => $post_id,
 			'posts_per_page' => -1,
 			'fields' => 'ids',
