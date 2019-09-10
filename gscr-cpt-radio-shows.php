@@ -71,6 +71,19 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 				return false;
 				
 			}
+
+			// Check for the CPT class, to ensure that RBM CPTs has successfully loaded
+			if ( ! class_exists( 'RBM_CPT' ) ) {
+				
+				$this->admin_errors[] = sprintf( _x( 'To use the %s Plugin, %s must be installed!', 'Missing Dependency Error', 'gscr-cpt-radio-shows' ), '<strong>' . $this->plugin_data['Name'] . '</strong>', '<a href="//github.com/realbig/rbm-cpts" target="_blank">' . __( 'RBM Custom Post Types', 'gscr-cpt-radio-shows' ) . '</a>' );
+				
+				if ( ! has_action( 'admin_notices', array( $this, 'admin_errors' ) ) ) {
+					add_action( 'admin_notices', array( $this, 'admin_errors' ) );
+				}
+				
+				return false;
+				
+			}
 			
 			if ( ! class_exists( 'Tribe__Events__Main' ) ) {
 				
