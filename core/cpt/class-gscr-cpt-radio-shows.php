@@ -4,7 +4,7 @@
  *
  * Creates the post type.
  *
- * @since {{VERSION}}
+ * @since 1.1.0
  */
 
 // Exit if accessed directly
@@ -34,7 +34,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	/**
 	 * CPT_GSCR_Radio_Shows constructor.
 	 *
-	 * @since {{VERSION}}
+	 * @since 1.1.0
 	 */
 	function __construct() {
 
@@ -75,7 +75,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * Registers our Radio Show Categories Taxonomy
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function register_taxonomy() {
@@ -102,7 +102,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
      * @param   [string]  $plural     Plural Label
      * @param   [string]  $menu_name  Menu Label. Defaults to Plural Label
      *
-     * @since   {{VERSION}}
+     * @since   1.1.0
      * @return  [array]               Taxonomy Labels
      */
     private function get_taxonomy_labels( $singular, $plural, $menu_name = false ) {
@@ -140,7 +140,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * @param		array $columns Array of Admin Columns
 	 *                                       
 	 * @access		public
-	 * @since		{{VERSION}}
+	 * @since		1.1.0
 	 * @return		array Modified Admin Column Array
 	 */
 	public function admin_column_add( $columns ) {
@@ -158,7 +158,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * @param		integer $post_id Post ID
 	 *                               
 	 * @access		public
-	 * @since		{{VERSION}}
+	 * @since		1.1.0
 	 * @return		void
 	 */
 	public function admin_column_display( $column, $post_id ) {
@@ -194,7 +194,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * Registers our Meta Boxes
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function add_meta_boxes() {
@@ -239,7 +239,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * Adds Metabox Content for our Radio Show Occurrences Meta Box
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function radio_show_metabox_content() {
@@ -317,7 +317,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * Adds Metabox Content for our Radio Show Metabox on the side
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function radio_show_side_metabox_content() {
@@ -344,7 +344,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * Adds Metabox Content for our Background Image Meta Box
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function radio_show_background_image_metabox_content() {
@@ -363,7 +363,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * Adds Metabox Content for our Headshot Image Meta Box
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function radio_show_headshot_image_metabox_content() {
@@ -382,7 +382,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * Enqueues the necessary JS/CSS on the Radio Show Edit Screen
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function admin_enqueue_scripts() {
@@ -408,7 +408,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * @param		array $labels Featured Image Labels
 	 *            
 	 * @access		public                          
-	 * @since		{{VERSION}}
+	 * @since		1.1.0
 	 * @return		array Featured Image Labels
 	 */
 	public function change_featured_image_banner_labels( $labels ) {
@@ -428,7 +428,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * @param   integer  $post_id  WP_Post ID
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function create_child_radio_shows( $post_id ) {
@@ -574,7 +574,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * Creates our custom Post Status which is applied to Radio Show Occurrences
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function register_post_status() {
@@ -597,7 +597,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * @param   integer  $post_id  WP_Post ID
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function before_delete_post( $post_id ) {
@@ -628,7 +628,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * @param   array  $value  Values for the current Repeater Row
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.0
 	 * @return  void
 	 */
 	public function add_day_time_fields( $args, $value ) {
