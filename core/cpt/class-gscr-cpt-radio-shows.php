@@ -615,7 +615,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * @param   integer  $post_id  WP_Post ID
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.1
 	 * @return  void
 	 */
 	public function before_trash_post( $post_id ) {
@@ -658,7 +658,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * @param   integer  $post_id  WP_Post ID
 	 *
 	 * @access	public
-	 * @since	{{VERSION}}
+	 * @since	1.1.1
 	 * @return  void
 	 */
 	public function before_untrash_post( $post_id ) {
