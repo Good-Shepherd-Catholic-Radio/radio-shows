@@ -364,6 +364,12 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 			'group' => 'radio_show_background_image',
 		) );
 
+		rbm_cpts_do_field_colorpicker( array(
+			'name' => 'radio_show_background_image_color',
+			'label' => '<strong>' . __( 'Background Color (Used if no Background Image is chosen)', 'gscr-cpt-radio-shows' ) . '</strong>',
+			'group' => 'radio_show_background_image',
+		) );
+
 		rbm_cpts_init_field_group( 'radio_show_background_image' );
 
 	}
