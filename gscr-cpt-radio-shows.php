@@ -177,20 +177,6 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 		 */
 		private function require_necessities() {
 
-			// Cause our custom Permastruct to exist
-			require_once GSCR_CPT_Radio_Shows_DIR . 'core/the-events-calendar/class-gscr-cpt-radio-shows-rewrite-rules.php';
-			
-			// Redirect all Events with the "Radio Show" Category to our Permastruct
-			require_once GSCR_CPT_Radio_Shows_DIR . 'core/the-events-calendar/class-gscr-cpt-radio-shows-redirects.php';
-			
-			// Remove all Radio Shows from the main The Events Calendar Query
-			require_once GSCR_CPT_Radio_Shows_DIR . 'core/the-events-calendar/class-gscr-cpt-radio-shows-query.php';
-			
-			// Includes our Meta Fields
-			require_once GSCR_CPT_Radio_Shows_DIR . 'core/class-gscr-cpt-radio-shows-fields.php';
-
-			// The above will all be removed once this has been approved. I just don't want to break things in the meantime
-
 			require_once GSCR_CPT_Radio_Shows_DIR . 'core/cpt/class-gscr-cpt-radio-shows.php';
 			$this->cpt = new CPT_GSCR_Radio_Shows();
 			
