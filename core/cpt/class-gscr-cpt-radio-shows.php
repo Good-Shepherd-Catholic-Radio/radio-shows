@@ -72,6 +72,9 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 		add_action( 'before_delete_post', array( $this, 'before_delete_post' ) );
 
 		add_action( 'rbm_cpts_radio_show_day_and_time', array( $this, 'add_day_time_fields' ), 10, 2 );
+
+		add_filter( 'the_permalink', array( $this, 'the_permalink' ) );	
+		add_filter( 'post_type_link', array( $this, 'get_permalink' ), 10, 4 );
 		
 	}
 
@@ -764,6 +767,53 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 		}
 
+	}
+
+	/**
+	 * Replace the_permalink() calls on the Frontend with the new Permastruct
+	 * 
+	 * @param		string $url The Post URL
+	 *                
+	 * @access		public
+	 * @since		{{VERSION}}
+	 * @return		string Modified URL
+	 */
+	public function the_permalink( $url ) {
+		
+		global $post;
+		
+		if ( $post->post_type !== 'radio-show' ) return $url;
+
+		if ( $post->post_status !== 'radioshow-occurrence' ) return $url;
+
+		$url = get_permalink( $post->post_parent );
+		
+		return $url;
+		
+	}
+	
+	/**
+	 * Replace get_peramlink() calls on the Frontend with the new Permastruct
+	 * 
+	 * @param		string  $url       The Post URL
+	 * @param		object  $post      WP Post Object
+	 * @param		boolean $leavename Whether to leave the Post Name
+	 * @param		boolean $sample    Is it a sample permalink?
+	 *     
+	 * @access		public
+	 * @since		{{VERSION}}
+	 * @return		string  Modified URL
+	 */
+	public function get_permalink( $url, $post, $leavename = false, $sample = false ) {
+		
+		if ( $post->post_type !== 'radio-show' ) return $url;
+
+		if ( $post->post_status !== 'radioshow-occurrence' ) return $url;
+
+		$url = get_permalink( $post->post_parent );
+		
+		return $url;
+		
 	}
 	
 }
