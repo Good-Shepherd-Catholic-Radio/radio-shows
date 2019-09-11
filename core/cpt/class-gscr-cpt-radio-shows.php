@@ -224,7 +224,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 		add_meta_box(
 			'radio-show-background-image',
-			__( 'Background Image', 'gscr-cpt-radio-shows' ),
+			apply_filters( 'gscr_radio_show_background_image_label', __( 'Background Image', 'gscr-cpt-radio-shows' ) ),
 			array( $this, 'radio_show_background_image_metabox_content' ),
 			$this->post_type,
 			'side',
@@ -233,7 +233,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 
 		add_meta_box(
 			'radio-show-headshot-image',
-			__( 'Headshot Image', 'gscr-cpt-radio-shows' ),
+			apply_filters( 'gscr_radio_show_headshot_image_label', __( 'Headshot Image', 'gscr-cpt-radio-shows' ) ),
 			array( $this, 'radio_show_headshot_image_metabox_content' ),
 			$this->post_type,
 			'side',
@@ -422,7 +422,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 */
 	public function change_featured_image_banner_labels( $labels ) {
 
-		$labels->featured_image = __( 'Logo Image', 'gscr-cpt-radio-shows' );
+		$labels->featured_image = apply_filters( 'gscr_radio_show_logo_image_label', __( 'Logo Image', 'gscr-cpt-radio-shows' ) );
 		$labels->set_featured_image = __( 'Set Logo Image', 'gscr-cpt-radio-shows' );
 		$labels->remove_featured_image = __( 'Remove Logo Image', 'gscr-cpt-radio-shows' );
 		$labels->use_featured_image = __( 'Use as Logo Image', 'gscr-cpt-radio-shows' );

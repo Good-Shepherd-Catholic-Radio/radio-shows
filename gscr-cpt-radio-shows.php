@@ -85,18 +85,6 @@ if ( ! class_exists( 'GSCR_CPT_Radio_Shows' ) ) {
 				
 			}
 			
-			if ( ! class_exists( 'Tribe__Events__Main' ) ) {
-				
-				$this->admin_errors[] = sprintf( _x( 'To use the %s Plugin, %s must be installed!', 'Missing Dependency Error', 'gscr-cpt-radio-shows' ), '<strong>' . $this->plugin_data['Name'] . '</strong>', '<a href="//wordpress.org/plugins/the-events-calendar/" target="_blank">' . __( 'The Events Calendar', 'gscr-cpt-radio-shows' ) . '</a>' );
-				
-				if ( ! has_action( 'admin_notices', array( $this, 'admin_errors' ) ) ) {
-					add_action( 'admin_notices', array( $this, 'admin_errors' ) );
-				}
-				
-				return false;
-				
-			}
-			
 			$this->require_necessities();
 			
 			// Register our CSS/JS for the whole plugin
