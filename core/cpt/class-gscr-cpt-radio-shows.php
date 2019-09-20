@@ -783,7 +783,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * @param		string $url The Post URL
 	 *                
 	 * @access		public
-	 * @since		{{VERSION}}
+	 * @since		2.0.0
 	 * @return		string Modified URL
 	 */
 	public function the_permalink( $url ) {
@@ -809,7 +809,7 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 * @param		boolean $sample    Is it a sample permalink?
 	 *     
 	 * @access		public
-	 * @since		{{VERSION}}
+	 * @since		2.0.0
 	 * @return		string  Modified URL
 	 */
 	public function get_permalink( $url, $post, $leavename = false, $sample = false ) {

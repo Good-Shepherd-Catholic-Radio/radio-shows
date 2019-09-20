@@ -18,7 +18,7 @@
     /**
      * Assign which Post IDs to delete on deselecting a Day
      * 
-     * @since {{VERSION}}
+     * @since 2.0.0
      * @return void
      */
     $( document ).on( 'change', '.fieldhelpers-field-select[data-fieldhelpers-name="days_of_the_week"] select', function( event ) {
@@ -81,7 +81,7 @@
     /**
      * Re-add Post IDs if a day is removed and then re-added
      * 
-     * @since {{VERSION}}
+     * @since 2.0.0
      * @return void
      */
     $( document ).on( 'change', '.fieldhelpers-field-select[data-fieldhelpers-name="days_of_the_week"] select', function( event ) {
