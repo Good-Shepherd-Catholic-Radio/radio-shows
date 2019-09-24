@@ -789,6 +789,8 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	public function the_permalink( $url ) {
 		
 		global $post;
+
+		if ( ! is_object( $post ) ) return $url;
 		
 		if ( $post->post_type !== 'radio-show' ) return $url;
 
