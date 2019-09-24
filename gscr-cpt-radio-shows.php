@@ -3,13 +3,13 @@
  * Plugin Name: CPT Radio Shows
  * Plugin URI: https://github.com/Good-Shepherd-Catholic-Radio/cpt-radio-shows
  * Description: Creates the "Radio Shows" Custom Post Type
- * Version: 2.0.0
+ * Version: 2.0.1
  * Text Domain: gscr-cpt-radio-shows
  * Author: Eric Defore
  * Author URI: http://realbigmarketing.com/
  * Contributors: d4mation
  * GitHub Plugin URI: Good-Shepherd-Catholic-Radio/cpt-radio-shows
- * GitHub Branch: develop
+ * GitHub Branch: master
  */
 
 // Exit if accessed directly
