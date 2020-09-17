@@ -98,7 +98,20 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
             'rewrite'               => array( 'slug' => 'radio-show-category' ),
         );
     
-        register_taxonomy( 'radio-show-category', 'radio-show', $args );
+		register_taxonomy( 'radio-show-category', 'radio-show', $args );
+		
+		$args = array(
+            'hierarchical'          => false,
+            'labels'                => $this->get_taxonomy_labels( __( 'Broadcaster', 'gscr-cpt-radio-shows' ), __( 'Broadcasters', 'gscr-cpt-radio-shows' ) ),
+            'show_in_menu'          => true,
+            'show_ui'               => true,
+            'show_admin_column'     => true,
+            'update_count_callback' => '_update_post_term_count',
+            'query_var'             => true,
+            'rewrite'               => array( 'slug' => 'radio-show-broacaster' ),
+        );
+    
+        register_taxonomy( 'radio-show-broadcaster', 'radio-show', $args );
 
 	}
 
@@ -332,18 +345,22 @@ class CPT_GSCR_Radio_Shows extends RBM_CPT {
 	 */
 	public function radio_show_side_metabox_content() {
 
-		rbm_cpts_do_field_checkbox( array(
+		rbm_cpts_do_field_toggle( array(
 			'name' => 'radio_show_is_local',
 			'group' => 'radio_show_side_meta',
-			'options' => array(
-				'1' => __( 'Local Radio Show?', 'gscr-cpt-radio-shows' ),
-			),
+			'label' => __( 'Local Radio Show?', 'gscr-cpt-radio-shows' ),
 		) );
 
 		rbm_cpts_do_field_text( array(
 			'name' => 'radio_show_call_in',
 			'group' => 'radio_show_side_meta',
 			'label' => '<strong>' . __( 'Call-In Number', 'gscr-cpt-radio-shows' ) . '</strong>',
+		) );
+
+		rbm_cpts_do_field_text( array(
+			'name' => 'radio_show_email',
+			'group' => 'radio_show_side_meta',
+			'label' => '<strong>' . __( 'Email Address', 'gscr-cpt-radio-shows' ) . '</strong>',
 		) );
 
 		rbm_cpts_init_field_group( 'radio_show_side_meta' );
